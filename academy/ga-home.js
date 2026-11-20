@@ -13,6 +13,8 @@ l.href = 'https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=
 document.head.appendChild(l);
 }
 var r = this.attachShadow({ mode: 'open' }); r.innerHTML = HTML; this.r = r;
+this.style.display = 'block'; this.style.width = '100%';
+var box = this.parentElement; if (box) { box.style.setProperty('height', 'auto', 'important'); box.style.setProperty('min-height', '0', 'important'); }
 this.st = { step: 0, a: 0, b: 0, c: 0, d: 0 };
 var self = this;
 r.addEventListener('click', function (e) {
@@ -51,4 +53,6 @@ box.appendChild(f);
 }
 }
 customElements.define('ga-home', GaHome);
+/* o Wix pode manter a tag padrão do elemento personalizado: registra nela também */
+if (!customElements.get('wix-default-custom-element')) customElements.define('wix-default-custom-element', class extends GaHome {});
 })();
