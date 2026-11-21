@@ -23,14 +23,14 @@ function fit() {
 var set = function (k, v) { host.style.setProperty(k, v, 'important'); };
 var mp = document.getElementById('masterPage');
 var w = Math.max(document.documentElement.clientWidth, mp ? mp.offsetWidth : 0);
-set('margin-left', '0px'); ['width', 'min-width', 'max-width'].forEach(function (k) { set(k, w + 'px'); });
+set('min-height', '0px'); set('height', 'auto'); set('margin-left', '0px'); ['width', 'min-width', 'max-width'].forEach(function (k) { set(k, w + 'px'); });
 host.style.setProperty('--ga-w', w + 'px');
 var l = host.getBoundingClientRect().left + (window.pageXOffset || 0);
 if (Math.abs(l) > 0.5) set('margin-left', (-l) + 'px');
 var sec = host.closest('section');
 if (box && sec) { box.style.setProperty('margin-top', '0px', 'important'); var d = box.getBoundingClientRect().top - sec.getBoundingClientRect().top; if (Math.abs(d) > 0.5) box.style.setProperty('margin-top', (-d) + 'px', 'important'); }
 var root = r.querySelector('.ga-root');
-if (root) { root.style.minHeight = '0px'; var y = window.pageYOffset || 0, hb = host.getBoundingClientRect(), pc = document.getElementById('PAGES_CONTAINER') || sec; var need = Math.max(window.innerHeight - (hb.top + y), pc ? pc.getBoundingClientRect().bottom - hb.top : 0); if (need > root.offsetHeight + 1) root.style.minHeight = Math.ceil(need) + 'px'; }
+if (root) { root.style.minHeight = '0px'; var y = window.pageYOffset || 0, hb = host.getBoundingClientRect(), pc = document.getElementById('PAGES_CONTAINER') || sec; var need = window.innerHeight - (hb.top + y); if (need > root.offsetHeight + 1) root.style.minHeight = Math.ceil(need) + 'px'; }
 }
 this._fit = fit; fit(); window.addEventListener('resize', fit); setTimeout(fit, 300); setTimeout(fit, 1500); setTimeout(fit, 4000);
 if (this._wired) { this.st = { step: 0, a: 0, b: 0, c: 0, d: 0 }; this.quiz(); return; }
