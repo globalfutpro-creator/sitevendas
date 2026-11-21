@@ -14,7 +14,7 @@ l.href = 'https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=
 document.head.appendChild(l);
 }
 /* o cabeçalho antigo do Wix sai destas páginas: o menu fica dentro do componente */
-if (!document.getElementById('ga-hide-header')) { var hs = document.createElement('style'); hs.id = 'ga-hide-header'; hs.textContent = '#SITE_HEADER,#SITE_HEADER-placeholder{display:none !important}html,body{background-color:#1a0f44 !important}'; document.head.appendChild(hs); }
+if (!document.getElementById('ga-hide-header')) { var hs = document.createElement('style'); hs.id = 'ga-hide-header'; hs.textContent = '#SITE_HEADER,#SITE_HEADER-placeholder,#SITE_FOOTER{display:none !important}html,body{background-color:#1a0f44 !important}'; document.head.appendChild(hs); }
 var r = this.shadowRoot || this.attachShadow({ mode: 'open' }); r.innerHTML = VIEWS[view()]; this.r = r;
 this.style.display = 'block';
 var box = this.parentElement;
@@ -29,6 +29,7 @@ var l = host.getBoundingClientRect().left + (window.pageXOffset || 0);
 if (Math.abs(l) > 0.5) set('margin-left', (-l) + 'px');
 var sec = host.closest('section');
 if (box && sec) { box.style.setProperty('margin-top', '0px', 'important'); var d = box.getBoundingClientRect().top - sec.getBoundingClientRect().top; if (Math.abs(d) > 0.5) box.style.setProperty('margin-top', (-d) + 'px', 'important'); }
+if (box && sec) { box.style.setProperty('margin-bottom', '0px', 'important'); var d2 = sec.getBoundingClientRect().bottom - box.getBoundingClientRect().bottom; if (d2 > 0.5) box.style.setProperty('margin-bottom', (-d2) + 'px', 'important'); }
 var root = r.querySelector('.ga-root');
 if (root) { root.style.minHeight = '0px'; var y = window.pageYOffset || 0, hb = host.getBoundingClientRect(), pc = document.getElementById('PAGES_CONTAINER') || sec; var need = window.innerHeight - (hb.top + y); if (need > root.offsetHeight + 1) root.style.minHeight = Math.ceil(need) + 'px'; }
 }
