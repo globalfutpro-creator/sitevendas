@@ -37,6 +37,30 @@ html:has([data-hook="program-page-main"]) body,html:has([data-hook="program-page
 [data-hook="social-group-link"],[data-hook="social-group-link"] *{color:#17d9ff!important}
 [data-hook="program-page-main"] [data-hook="progressbar-background"]{background:rgba(20,10,54,.85)!important}
 [data-hook="program-page-main"] [data-hook="progressbar-foreground"]{background:linear-gradient(90deg,#9b30ff,#ffc43d,#17d9ff)!important;min-width:6px}
+
+/* Meus programas + perfil */
+html:has([data-hook="my-challenge-list-wrapper"]) body,html:has([data-hook="ProfileCard-wrapper"]) body{background:linear-gradient(180deg,#2a1470,#1a0f44 45%,#140a36)!important}
+html:has([data-hook="my-challenge-list-wrapper"]) #PAGES_CONTAINER,html:has([data-hook="my-challenge-list-wrapper"]) #SITE_PAGES{background:transparent!important}
+[data-hook="ProfileCard-wrapper"]{border-radius:22px!important;overflow:hidden!important;border:1.5px solid rgba(255,196,61,.75)!important;box-shadow:0 0 30px rgba(155,48,255,.45)!important;background:linear-gradient(180deg,rgba(42,20,112,.95),rgba(26,15,68,.98))!important;font-family:Barlow,sans-serif!important}
+[data-hook="ProfileCard-wrapper"] div{background-color:transparent!important}
+[data-hook="ProfileCard-coverWrapper"]{position:relative}
+[data-hook="ProfileCard-coverWrapper"]::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,20,112,.15),rgba(26,15,68,.9));pointer-events:none}
+[data-hook="ProfileCard-profilePhoto"]{border-radius:50%!important;box-shadow:0 0 0 4px #ffc43d,0 0 26px rgba(255,196,61,.6)!important}
+[data-hook="ProfileCard-memberName"],[data-hook="ProfileCard-memberName"] *{font-family:Teko,sans-serif!important;font-weight:700!important;font-size:38px!important;line-height:1!important;color:#fff!important}
+[data-hook="ProfileCard-followersFollowing"] *{color:#e9dcff!important;font-family:Barlow,sans-serif!important}
+[data-hook="my-challenge-list-wrapper"]{font-family:Barlow,sans-serif!important;color:#fff!important;background:transparent!important}
+[data-hook="my-challenge-list-wrapper"] div{background-color:transparent!important}
+[data-hook="scrollable-tabs"]{display:block!important;padding:5px!important;border-radius:14px!important;background:rgba(20,10,54,.75)!important;border:1px solid rgba(185,140,255,.3)!important;margin:6px 0 14px!important}
+[data-hook="scrollable-tabs"] [data-hook^="tab-item-"]{border-radius:10px!important;padding:11px 14px!important;font-weight:700!important;text-transform:uppercase!important;letter-spacing:.06em!important;color:#e9dcff!important;border:0!important}
+[data-hook="scrollable-tabs"] [data-hook^="tab-item-"][aria-selected="true"],[data-hook="scrollable-tabs"] [data-hook^="tab-item-"][class*="selected"]{color:#2a1600!important;background:linear-gradient(180deg,#ffe08a,#ffb21a)!important}
+[data-hook="scrollable-tabs"] [data-hook$="nav-btn"]{display:none!important}
+.ga-mp-card{border-radius:20px!important;overflow:hidden!important;background:linear-gradient(160deg,rgba(58,29,140,.96),rgba(31,16,86,.96))!important;border:1.5px solid rgba(23,217,255,.75)!important;box-shadow:0 0 26px rgba(23,217,255,.25)!important;color:#fff!important}
+.ga-mp-card h2,.ga-mp-card h3,.ga-mp-card [class*="itle"]{font-family:Teko,sans-serif!important;font-size:28px!important;line-height:1!important;color:#fff!important}
+.ga-mp-hide{display:none!important}
+.ga-mp-cta{display:block!important;width:100%!important;box-sizing:border-box!important;text-align:center!important;border:0!important;border-radius:12px!important;padding:14px!important;font:800 15px Barlow,sans-serif!important;letter-spacing:.05em!important;text-transform:uppercase!important;color:#2a1600!important;background:linear-gradient(180deg,#ffe08a,#ffb21a)!important;box-shadow:0 0 22px rgba(255,196,61,.5)!important}
+.ga-mp-cta *{color:#2a1600!important}
+[data-hook="ma-empty-program-link"]{display:inline-block!important;margin-top:10px;color:#2a1600!important;text-decoration:none!important;font-weight:800!important;text-transform:uppercase;letter-spacing:.05em;padding:13px 20px!important;border-radius:12px;background:linear-gradient(180deg,#ffe08a,#ffb21a)!important}
+html:has([data-hook="program-page-main"]) #SITE_PAGES [data-hook="bgLayers"],html:has([data-hook="program-page-main"]) #SITE_PAGES [data-hook="bgLayers"] *,html:has([data-hook="my-challenge-list-wrapper"]) #SITE_PAGES [data-hook="bgLayers"],html:has([data-hook="my-challenge-list-wrapper"]) #SITE_PAGES [data-hook="bgLayers"] *{background:transparent!important}
 .ga-mosaic{margin:22px 0 8px;display:flex;flex-direction:column;gap:12px}
 .ga-mosaic h3{margin:0;font:700 28px/1 Teko,sans-serif;color:#fff}
 .ga-mosaic h3 b{background:linear-gradient(180deg,#ffe8a3,#ffc43d 55%,#ff9f1a);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -74,6 +98,25 @@ function build(){
 }
 if(!document.getElementById('ga-fonts')){var l=document.createElement('link');l.id='ga-fonts';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap';document.head.appendChild(l);}
 setTimeout(build,600);
-var t; new MutationObserver(function(){clearTimeout(t); t=setTimeout(build,250);}).observe(document.documentElement,{childList:true,subtree:true});
+
+function myProgs(){
+  var w=q('[data-hook="my-challenge-list-wrapper"]'); if(!w) return;
+  var t0=q('[data-hook="tab-item-0"]',w), t1=q('[data-hook="tab-item-1"]',w);
+  [[t0,'Curso em andamento'],[t1,'Curso finalizado']].forEach(function(p){ if(!p[0]) return; var el=p[0]; var leaf=[].slice.call(el.querySelectorAll('*')).filter(function(x){return !x.children.length&&x.textContent.trim();})[0]||el; if(leaf.textContent!==p[1]) leaf.textContent=p[1]; });
+  var e=q('[data-hook="ma-empty-program-link"]',w); if(e&&e.textContent!=='Ver cursos') e.textContent='Ver cursos';
+  [].slice.call(w.querySelectorAll('li, [role="listitem"], article')).forEach(function(card){
+    if(card.closest('[data-hook="scrollable-tabs"]')) return;
+    var ctas=[].slice.call(card.querySelectorAll('a[href], button')).filter(function(b){return b.textContent.trim();});
+    if(!ctas.length) return;
+    card.classList.add('ga-mp-card');
+    var main=ctas.filter(function(b){return /acess|continu|ver|abrir|começ|retom/i.test(b.textContent);})[0]||ctas[ctas.length-1];
+    ctas.forEach(function(b){ if(b!==main) b.classList.add('ga-mp-hide'); });
+    main.classList.add('ga-mp-cta');
+    var done=t1&&(t1.getAttribute('aria-selected')==='true');
+    var lbl=done?'Assistir de novo':'Acessar curso'; var leaf=[].slice.call(main.querySelectorAll('*')).filter(function(x){return !x.children.length&&x.textContent.trim();})[0]||main; if(leaf.textContent!==lbl) leaf.textContent=lbl;
+  });
+}
+setTimeout(myProgs,800);
+var t; new MutationObserver(function(){clearTimeout(t); t=setTimeout(function(){build();myProgs();},250);}).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
