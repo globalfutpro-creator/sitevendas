@@ -66,26 +66,41 @@ export const sessao = webMethod(Permissions.Anyone, async () => {
   return { logado: true, aluno: s.aluno, admin: s.admin, perfil };
 });
 
-export const feed = webMethod(Permissions.Anyone, async ({ aba = 'todos', antesDe = null, autor = null } = {}) => {
+async function montarFeed({ aba = 'todos', antesDe = null, autor = null } = {}, meId) {
   let q = wixData.query('ComuPosts').ne('oculto', true).descending('_createdDate').limit(12);
-  if (aba && aba !== 'todos' && aba !== 'alta') q = q.eq('aba', aba);
   if (aba === 'alta') q = wixData.query('ComuPosts').ne('oculto', true).descending('curtidas').limit(12);
+  else if (aba && aba !== 'todos') q = q.eq('aba', aba);
   if (autor) q = q.eq('autorId', autor);
   if (antesDe) q = q.lt('_createdDate', new Date(antesDe));
   const r = await q.find(OPT);
+  if (!r.items.length) return { posts: [], fim: true };
+  const pids = r.items.map(p => p._id);
   const ids = [...new Set(r.items.map(p => p.autorId))];
-  const perf = ids.length ? (await wixData.query('ComuPerfis').hasSome('memberId', ids).limit(100).find(OPT)).items : [];
-  const mapa = Object.fromEntries(perf.map(p => [p.memberId, p]));
-  let curti = [];
-  const s = await quemSou();
-  if (s.membro && r.items.length) {
-    curti = (await wixData.query('ComuCurtidas').eq('memberId', s.membro._id).hasSome('postId', r.items.map(p => p._id)).limit(100).find(OPT)).items.map(c => c.postId);
-  }
-  const posts = await Promise.all(r.items.map(async p => {
-    const c = await wixData.query('ComuComentarios').eq('postId', p._id).descending('_createdDate').limit(2).find(OPT);
-    return { ...p, autor: mapa[p.autorId] || null, curti: curti.includes(p._id), ultimos: c.items.reverse() };
-  }));
+  const [perf, curt, coms] = await Promise.all([
+    wixData.query('ComuPerfis').hasSome('memberId', ids).limit(100).find(OPT),
+    meId ? wixData.query('ComuCurtidas').eq('memberId', meId).hasSome('postId', pids).limit(100).find(OPT) : Promise.resolve({ items: [] }),
+    wixData.query('ComuComentarios').hasSome('postId', pids).descending('_createdDate').limit(200).find(OPT)
+  ]);
+  const mapa = Object.fromEntries(perf.items.map(p => [p.memberId, p]));
+  const curti = new Set(curt.items.map(c => c.postId));
+  /** @type {Object<string, any[]>} */
+  const ult = {};
+  for (const c of coms.items) { const l = ult[c.postId] || (ult[c.postId] = []); if (l.length < 2) l.unshift(c); }
+  const posts = r.items.map(p => ({ ...p, autor: mapa[p.autorId] || null, curti: curti.has(p._id), ultimos: ult[p._id] || [] }));
   return { posts, fim: r.items.length < 12 };
+}
+async function meuId() { try { const m = await currentMember.getMember(); return m ? m._id : null; } catch (e) { return null; } }
+
+export const feed = webMethod(Permissions.Anyone, async (args) => montarFeed(args || {}, await meuId()));
+
+// Tudo o que a página precisa ao abrir, numa chamada só (abre rápido)
+export const inicio = webMethod(Permissions.Anyone, async () => {
+  const [s, top] = await Promise.all([quemSou(), wixData.query('ComuPerfis').descending('seguidores').limit(10).find(OPT)]);
+  const [f, perfil] = await Promise.all([
+    montarFeed({}, s.membro ? s.membro._id : null),
+    s.membro && s.aluno ? perfilDe(s.membro._id, s.membro) : Promise.resolve(null)
+  ]);
+  return { sessao: s.membro ? { logado: true, aluno: s.aluno, admin: s.admin, perfil } : { logado: false, aluno: false }, feed: f, top: top.items };
 });
 
 export const maisSeguidos = webMethod(Permissions.Anyone, async () => {

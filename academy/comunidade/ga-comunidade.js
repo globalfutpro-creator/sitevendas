@@ -101,11 +101,14 @@
     '.msg{color:#ff8fa3;font-size:13px;min-height:18px;margin:0 0 8px}',
     '.prog{height:6px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;margin:0 0 12px}.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#17d9ff,#ffc43d)}',
     '.cmi{display:flex;gap:8px;position:sticky;bottom:-18px;padding:10px 0 0;background:inherit}.cmi .fld{margin:0}',
+    '.sk .skc{width:44px;height:44px;border-radius:50%}.sk .skc,.sk .skl,.sk .skm{display:block;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.16),rgba(255,255,255,.06));background-size:200% 100%;animation:shim 1.1s linear infinite}.sk .skl{height:12px;border-radius:6px}.sk .skm{aspect-ratio:4/5;max-height:420px}@keyframes shim{to{background-position:-200% 0}}',
     '.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:30;background:#1f1056;border:1px solid #ffc43d;border-radius:999px;padding:10px 18px;font-weight:700;box-shadow:0 0 24px rgba(255,196,61,.4)}'
   ].join('\n');
 
+  var SK1 = '<div class="box post sk"><div class="ph"><span class="skc"></span><span class="skl" style="width:40%"></span></div><div class="skm"></div><div style="padding:14px"><span class="skl" style="width:70%"></span><span class="skl" style="width:45%;margin-top:8px"></span></div></div>';
+  var SKEL = SK1 + SK1;
   class GaComunidade extends HTMLElement {
-    static get observedAttributes() { return ['sessao', 'resp']; }
+    static get observedAttributes() { return ['sessao', 'resp', 'inicio']; }
     constructor() {
       super();
       this.r = this.attachShadow({ mode: 'open' });
@@ -118,16 +121,23 @@
       this.r.innerHTML = '<style>' + CSS + '</style><div id="app"></div>';
       this.app = this.r.getElementById('app');
       this.app.addEventListener('click', (e) => this.clique(e));
+      if (!this.u) { try { var cc = JSON.parse(localStorage.getItem('ga-comu-cache') || 'null'); if (cc && cc.feed) { this.posts = cc.feed.posts || []; this.top = cc.top || []; this.fim = cc.feed.fim; } } catch (e) {} }
       this.render();
       // sem o código da página (pré-visualização), mostra o aviso em vez de travar
-      this.boot = setTimeout(() => { if (!this.ligado) { this.ligado = true; this.carregar(); } }, 2500);
+      this.boot = setTimeout(() => { if (!this.ligado) { this.ligado = true; this.carregar(); } }, 8000);
     }
     attributeChangedCallback(nome, _a, v) {
       if (!v) return;
       var d; try { d = JSON.parse(v); } catch (e) { return; }
+      if (nome === 'inicio') {
+        this.ligado = true; this.s = d.sessao || this.s; this.top = d.top || [];
+        if (!this.u) { this.posts = d.feed.posts; this.fim = d.feed.fim; this.carregando = false; this.render(); }
+        else this.carregar();
+        try { localStorage.setItem('ga-comu-cache', JSON.stringify({ feed: d.feed, top: d.top })); } catch (e) {}
+        return;
+      }
       if (nome === 'sessao') {
-        this.s = d || {}; var era = this.ligado; this.ligado = true;
-        if (!era) this.carregar(); else this.render();
+        this.s = d || {}; this.render();
       } else if (nome === 'resp' && this.pend[d.id]) {
         var p = this.pend[d.id]; delete this.pend[d.id];
         d.ok ? p.ok(d.data) : p.no(new Error(d.data));
@@ -206,7 +216,7 @@
       var stories = this.top.length ? '<div class="stories">' + this.top.map((p) => '<button class="st" data-perfil="' + esc(p.handle) + '">' + this.av(p, 56) + '<span>' + esc(p.handle) + '</span></button>').join('') + '</div>' : '';
       var compose = aluno ? '<div class="box compose" data-postar>' + this.av(this.s.perfil) + '<span class="tx">Mostre o seu trabalho: corte, narração ou arte…</span>' + ICO.plus + '</div>' : '';
       var lista = this.falhou ? '<div class="box empty">A comunidade está sendo ligada. Volte em instantes.</div>'
-        : (this.posts.length ? this.posts.map((p) => this.cartao(p)).join('') : (this.carregando || !this.ligado ? '<div class="empty">Carregando…</div>' : '<div class="box empty">Ainda não tem posts aqui. ' + (aluno ? 'Seja o primeiro a postar!' : 'Os alunos começam a postar em breve.') + '</div>'));
+        : (this.posts.length ? this.posts.map((p) => this.cartao(p)).join('') : (this.carregando || !this.ligado ? SKEL : '<div class="box empty">Ainda não tem posts aqui. ' + (aluno ? 'Seja o primeiro a postar!' : 'Os alunos começam a postar em breve.') + '</div>'));
       var mais = !this.fim && this.posts.length ? '<button class="more" data-mais>' + (this.carregando ? 'Carregando…' : 'Ver mais') + '</button>' : '';
       var centro;
       if (this.perfil) {

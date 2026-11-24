@@ -25,5 +25,5 @@ $w.onReady(async function () {
   });
 
   authentication.onLogin(sessao);
-  await sessao();
+  try { el.setAttribute('inicio', JSON.stringify(await C.inicio())); } catch (e) { await sessao(); }
 });
