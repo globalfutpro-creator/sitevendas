@@ -103,11 +103,6 @@
     '.prog{height:6px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;margin:0 0 12px}.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#17d9ff,#ffc43d)}',
     '.cmi{display:flex;gap:8px;position:sticky;bottom:-18px;padding:10px 0 0;background:inherit}.cmi .fld{margin:0}',
     '.sk .skc{width:44px;height:44px;border-radius:50%}.sk .skc,.sk .skl,.sk .skm{display:block;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.16),rgba(255,255,255,.06));background-size:200% 100%;animation:shim 1.1s linear infinite}.sk .skl{height:12px;border-radius:6px}.sk .skm{aspect-ratio:4/5;max-height:420px}@keyframes shim{to{background-position:-200% 0}}',
-    '.hero{position:relative;overflow:hidden;margin:4px 0 18px;padding:26px 20px 22px;border-radius:24px;background:radial-gradient(120% 90% at 100% 0%,rgba(255,196,61,.28),transparent 55%),radial-gradient(90% 80% at 0% 100%,rgba(23,217,255,.22),transparent 60%),linear-gradient(160deg,#3a1c8f,#1f1056);border:1px solid rgba(255,196,61,.55);box-shadow:0 0 34px rgba(155,48,255,.45)}',
-    '.hero .kick{display:inline-block;font:800 11px Barlow;letter-spacing:.14em;text-transform:uppercase;color:#5ff0ff;margin-bottom:8px}',
-    '.hero h1{margin:0;font:700 50px/.88 Teko,sans-serif;text-transform:uppercase;letter-spacing:.01em}@media(min-width:700px){.hero h1{font-size:66px}}',
-    '.hero p{margin:10px 0 16px;color:#efe6ff;font-size:15px;line-height:1.5;max-width:460px}',
-    '.hst{display:flex;align-items:center;gap:12px;font-size:14px;color:#cdb8ff}.hst b{color:#ffc43d;font:700 24px Teko;vertical-align:-3px}',
     '.stack{display:flex}.stack .ring{margin-left:-10px}.stack .ring:first-child{margin-left:0}',
     '.sec h4{margin:0 2px 2px;font:700 22px Teko;text-transform:uppercase;letter-spacing:.02em}.sec h4 small{color:#ffc43d;font-size:18px;margin-left:4px}',
     '.tl{position:relative;padding-left:20px;margin-top:14px}.tl:before{content:"";position:absolute;left:6px;top:6px;bottom:0;width:2px;background:linear-gradient(#ffc43d,#9b30ff 60%,transparent)}',
@@ -117,6 +112,38 @@
     '.grid .txt{margin:0;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;padding:8px;border-radius:6px}.grid .txt.big{font-size:18px}',
     '.hdl{color:#17d9ff;font-weight:700;font-size:13px}',
     '.compose{margin-bottom:4px}',
+    '.hero{position:relative;overflow:hidden;margin:4px 0 20px;border-radius:26px;padding:2px;background:conic-gradient(from var(--a,0deg),#ffc43d,#9b30ff,#17d9ff,#ffc43d);animation:gira 6s linear infinite;box-shadow:0 0 40px rgba(155,48,255,.5),0 0 80px rgba(255,196,61,.18)}',
+    '@property --a{syntax:"<angle>";inherits:false;initial-value:0deg}@keyframes gira{to{--a:360deg}}',
+    '.hero .hbg{position:absolute;inset:2px;border-radius:24px;background:center/cover;opacity:.35;filter:saturate(1.2)}',
+    '.hero .hglow{position:absolute;inset:2px;border-radius:24px;background:radial-gradient(120% 90% at 100% 0%,rgba(255,196,61,.30),transparent 55%),radial-gradient(90% 80% at 0% 100%,rgba(23,217,255,.25),transparent 60%),linear-gradient(160deg,rgba(58,28,143,.82),rgba(26,15,68,.94))}',
+    '.hin{position:relative;padding:28px 20px 22px}',
+    '.hero .kick{display:inline-flex;align-items:center;gap:8px;font:800 11px Barlow;letter-spacing:.14em;text-transform:uppercase;color:#5ff0ff;margin-bottom:10px}.hero .kick i{width:8px;height:8px;border-radius:50%;background:#17d9ff;box-shadow:0 0 10px #17d9ff;animation:pis 1.6s ease-in-out infinite}',
+    '@keyframes pis{50%{opacity:.35;transform:scale(.7)}}',
+    '.hero h1{margin:0;font:700 56px/.86 Teko,sans-serif;text-transform:uppercase;letter-spacing:.01em;text-shadow:0 0 24px rgba(155,48,255,.6)}.hero h1 .g{filter:drop-shadow(0 0 14px rgba(255,196,61,.55))}@media(min-width:700px){.hero h1{font-size:76px}}',
+    '.hero p{margin:12px 0 16px;color:#efe6ff;font-size:15px;line-height:1.5;max-width:470px}',
+    '.hchips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}.hchips span{display:flex;align-items:baseline;gap:6px;padding:8px 12px;border-radius:12px;background:rgba(10,4,40,.55);border:1px solid rgba(255,196,61,.35);font:700 12px Barlow;letter-spacing:.08em;text-transform:uppercase;color:#cdb8ff}.hchips b{font:700 26px/1 Teko;color:#ffc43d;letter-spacing:0}',
+    '.hst{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.hst .btn{min-height:46px}',
+    '.shine{position:relative;overflow:hidden}.shine:after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);transform:skewX(-20deg);animation:brilha 3.2s ease-in-out infinite}',
+    '@keyframes brilha{0%,60%{left:-60%}100%{left:130%}}',
+    '.jn{position:relative}.jn:before{content:"";position:absolute;left:-17px;top:20px;width:8px;height:8px;border-radius:50%;background:#17d9ff;box-shadow:0 0 10px #17d9ff}',
+    '.jni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:rgba(10,4,40,.38);border:1px dashed rgba(23,217,255,.35)}.jni .nm{flex:1;min-width:0;background:none;border:0;padding:0;text-align:left;font-size:14px;color:#e9dcff}.jni b{color:#fff}.jni small{display:block;color:#17d9ff;font-weight:700;font-size:12px}',
+    '.seg.sm{padding:5px 10px;font-size:11px}',
+    '.sent{opacity:.7}.fimtl{text-align:center;color:#9f8ad8;font-size:13px;padding:10px 0 4px}',
+    '.voltar{margin:0 0 12px}',
+    '.pf{position:relative}.pf .capa{height:190px;border-radius:24px 24px 0 0;background:#1f1056 center/cover;position:relative;overflow:hidden;border:1px solid rgba(255,196,61,.4);border-bottom:0}',
+    '.capa-brilho{position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,15,68,.05),rgba(31,16,86,.95)),radial-gradient(80% 60% at 80% 0%,rgba(255,196,61,.35),transparent 60%)}',
+    '.pcard{position:relative;margin-top:-70px;padding:0 18px 20px;text-align:center;border-radius:0 0 24px 24px;background:linear-gradient(180deg,transparent,rgba(31,16,86,.96) 70px);border:1px solid rgba(255,196,61,.4);border-top:0;box-shadow:0 20px 50px rgba(10,4,40,.6)}',
+    '.pav{display:inline-block;border-radius:50%;padding:4px;background:conic-gradient(from var(--a,0deg),#ffc43d,#9b30ff,#17d9ff,#ffc43d);animation:gira 5s linear infinite;box-shadow:0 0 30px rgba(255,196,61,.55)}.pav .ring{padding:0;background:none}',
+    '.pnome{margin:12px 0 2px;font:700 44px/.9 Teko,sans-serif;text-transform:uppercase;letter-spacing:.01em;word-break:break-word}.pnome.lg{font-size:32px}.pnome .g{filter:drop-shadow(0 0 12px rgba(255,196,61,.5))}',
+    '.phdl{color:#17d9ff;font-weight:700;font-size:14px}.phdl span{color:#cdb8ff}',
+    '.pbadges{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:12px 0 4px}.pbadges .tag{margin:0;font-size:10px;padding:5px 10px}.tag.dim{background:rgba(255,255,255,.06);color:#cdb8ff;border-color:rgba(255,255,255,.18)}',
+    '.pf .bio{margin:12px auto 0;max-width:420px;font-size:14px;line-height:1.55;color:#efe6ff}.pf .bio.vazio{color:#9f8ad8;font-style:italic}',
+    '.pf .nums{margin:18px 0;gap:10px;display:grid;grid-template-columns:repeat(3,1fr);padding:0;background:none;border:0}',
+    '.pf .nums div{padding:12px 4px;border-radius:16px;background:rgba(10,4,40,.55);border:1px solid rgba(255,196,61,.35);box-shadow:inset 0 0 18px rgba(155,48,255,.25)}.pf .nums b{font-size:34px}',
+    '.pf .pbtn{margin:0;display:flex;gap:10px}.pf .pbtn .btn{flex:1}',
+    '.ptabs{display:flex;gap:18px;margin:22px 4px 10px;border-bottom:1px solid rgba(185,140,255,.25)}.ptabs span{padding:0 2px 10px;font:800 13px Barlow;letter-spacing:.12em;text-transform:uppercase;color:#9f8ad8}.ptabs .on{color:#ffc43d;border-bottom:2px solid #ffc43d;box-shadow:0 6px 12px -8px #ffc43d}',
+    '.pf .grid{padding:0;gap:6px}.pf .grid button{border-radius:12px;border:1px solid rgba(185,140,255,.25);transition:transform .2s}.pf .grid button:hover{transform:scale(1.03)}',
+    '.pvazio{display:flex;flex-direction:column;align-items:center;gap:6px;padding:36px 20px;border-radius:20px;border:1px dashed rgba(255,196,61,.4);background:rgba(10,4,40,.35);text-align:center;color:#cdb8ff;font-size:14px}.pvazio b{color:#fff;font:700 26px Teko;text-transform:uppercase}.pvi{font-size:34px;color:#ffc43d;text-shadow:0 0 16px #ffc43d}',
     '.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:30;background:#1f1056;border:1px solid #ffc43d;border-radius:999px;padding:10px 18px;font-weight:700;box-shadow:0 0 24px rgba(255,196,61,.4)}'
   ].join('\n');
 
@@ -183,7 +210,7 @@
       this.carregando = true; this.render();
       var antes = !zera && this.posts.length ? this.posts[this.posts.length - 1]._createdDate : null;
       var r = await this.chamar('feed', { aba: this.aba, antesDe: antes, autor: this.perfil ? this.perfil.memberId : null });
-      this.posts = zera ? r.posts : this.posts.concat(r.posts); this.fim = r.fim;
+      this.posts = zera ? r.posts : this.posts.concat(r.posts); this.fim = r.fim; if (zera) this.lim = 10;
       this.carregando = false; this.render();
     }
     async abrirPerfil(handle, inicial) {
@@ -204,6 +231,11 @@
       var u = esc(p.midia);
       if (p.tipo === 'video') return '<video src="' + u + '#t=0.5" ' + (grid ? 'muted playsinline preload="metadata"' : 'controls playsinline preload="metadata"') + '></video>';
       return '<img src="' + u + '" alt="" loading="lazy">';
+    }
+    entrada(m) {
+      var meu = this.s.perfil && this.s.perfil.memberId === m.memberId;
+      return '<div class="jn"><div class="jni">' + this.av(m, 40) + '<button class="nm" data-perfil="' + esc(m.handle) + '"><b>' + esc(m.nome || m.handle) + '</b> entrou na comunidade<small>' + quando(m.entrouEm || m._createdDate) + '</small></button>' +
+        (meu ? '' : '<button class="seg sm" data-seguir="' + esc(m.memberId) + '">Seguir</button>') + '</div></div>';
     }
     cartao(p) {
       var a = p.autor || {}; var meu = this.s.perfil && this.s.perfil.memberId === p.autorId;
@@ -230,27 +262,47 @@
       var nav = ABAS.map((t) => '<button class="' + (this.aba === t[0] && !this.perfil ? 'on' : '') + '" data-aba="' + t[0] + '">' + t[1] + '</button>').join('') +
         (this.s.perfil ? '<button data-perfil="' + esc(this.s.perfil.handle) + '">Meu perfil</button>' : '');
       var mem = this.membros.length ? this.membros : this.top;
-      var hero = '<section class="hero"><span class="kick">Rede social dos alunos · Global Academy</span><h1>Mural da <span class="g">Comunidade</span></h1>' +
+      var nPosts = this.posts.length;
+      var hero = '<section class="hero"><div class="hbg" style="background-image:url(\'' + IMG + 'cena-arena-hd.jpg\')"></div><div class="hglow"></div>' +
+        '<div class="hin"><span class="kick"><i></i>Rede social dos alunos · Global Academy</span>' +
+        '<h1>Mural da<br><span class="g">Comunidade</span></h1>' +
         '<p>Cortes, narrações, artes e jogadas. Mostre o seu trabalho, siga quem faz e seja visto por quem contrata.</p>' +
-        '<div class="hst"><div class="stack">' + mem.slice(0, 6).map((p) => this.av(p, 34)).join('') + '</div><span><b>' + (mem.length || '…') + '</b> na comunidade</span></div></section>';
+        '<div class="hchips"><span><b>' + (mem.length || '…') + '</b>membros</span><span><b>' + nPosts + (this.fim ? '' : '+') + '</b>posts</span></div>' +
+        '<div class="hst"><div class="stack">' + mem.slice(0, 7).map((p) => this.av(p, 38)).join('') + '</div>' +
+        (aluno ? '<button class="btn gold shine" data-postar>+ Postar agora</button>' : '<button class="btn gold shine" data-portao>Quero participar</button>') + '</div></div></section>';
       var quem = mem.length ? '<div class="sec"><h4>Quem está na comunidade <small>' + mem.length + '</small></h4><div class="stories">' + mem.map((p) => '<button class="st" data-perfil="' + esc(p.handle) + '">' + this.av(p, 56) + '<span>' + esc(p.nome || p.handle) + '</span></button>').join('') + '</div></div>' : '';
       var stories = this.top.length ? '<div class="stories">' + this.top.map((p) => '<button class="st" data-perfil="' + esc(p.handle) + '">' + this.av(p, 56) + '<span>' + esc(p.handle) + '</span></button>').join('') + '</div>' : '';
       var compose = aluno ? '<div class="box compose" data-postar>' + this.av(this.s.perfil) + '<span class="tx">Mostre o seu trabalho: corte, narração ou arte…</span>' + ICO.plus + '</div>' : '';
+      var itens = this.posts.map((p) => ({ k: 'p', d: new Date(p.quando || p._createdDate).getTime(), p: p }));
+      if (this.aba === 'todos' && this.membros.length) {
+        var limite = this.fim || !this.posts.length ? 0 : Math.min.apply(null, itens.map((x) => x.d));
+        this.membros.forEach((m) => { var d = new Date(m.entrouEm || m._createdDate).getTime(); if (d >= limite) itens.push({ k: 'j', d: d, p: m }); });
+      }
+      itens.sort((a, b) => b.d - a.d);
+      this.totalItens = itens.length;
+      var vis = itens.slice(0, this.lim || 10);
       var lista = this.falhou ? '<div class="box empty">A comunidade está sendo ligada. Volte em instantes.</div>'
-        : (this.posts.length ? this.posts.map((p) => this.cartao(p)).join('') : (this.carregando || !this.ligado ? SKEL : '<div class="box empty">Ainda não tem posts aqui. ' + (aluno ? 'Seja o primeiro a postar!' : 'Os alunos começam a postar em breve.') + '</div>'));
-      var mais = !this.fim && this.posts.length ? '<button class="more" data-mais>' + (this.carregando ? 'Carregando…' : 'Ver mais') + '</button>' : '';
+        : (vis.length ? vis.map((x) => x.k === 'p' ? this.cartao(x.p) : this.entrada(x.p)).join('') : (this.carregando || !this.ligado ? SKEL : '<div class="box empty">Ainda não tem posts aqui. ' + (aluno ? 'Seja o primeiro a postar!' : 'Os alunos começam a postar em breve.') + '</div>'));
+      var mais = (vis.length < itens.length || (!this.fim && this.posts.length)) ? '<div id="sent" class="sent">' + SK1 + '</div>' : (vis.length ? '<div class="fimtl">Você chegou ao começo da comunidade ✨</div>' : '');
       var centro;
       if (this.perfil) {
-        var p = this.perfil;
-        centro = '<button class="more" data-voltar style="margin:0 0 12px">← Voltar ao feed</button><div class="box pf">' +
-          '<div class="capa" style="background-image:url(\'' + esc(p.capa || IMG + 'cena-arena-hd.jpg') + '\')"></div>' +
-          '<div class="hd">' + this.av(p, 88) + '<div style="padding-bottom:6px;min-width:0;flex:1"><h2 style="font-size:' + ((p.nome || p.handle || '').length > 14 ? 26 : 36) + 'px">' + esc(p.nome || p.handle) + '</h2><small class="hdl">@' + esc(p.handle) + '</small><br>' + this.tagDe(p).replace('class="tag', 'style="margin:4px 0 0" class="tag') + (p.area ? ' <span class="tag">' + esc(p.area) + '</span>' : '') + '</div></div>' +
-          (p.bio ? '<p class="bio">' + esc(p.bio) + '</p>' : '') +
-          '<div class="nums"><div><b class="g">' + num(p.posts) + '</b><span>posts</span></div><div><b class="g">' + num(p.seguidores) + '</b><span>seguidores</span></div><div><b class="g">' + num(p.seguindo) + '</b><span>seguindo</span></div></div>' +
-          '<div class="pbtn">' + (p.meu ? '<button class="btn ghost" data-editar>Editar perfil</button><button class="btn gold" data-postar>Postar</button>'
-            : '<button class="btn ' + (p.sigo ? 'ghost' : 'gold') + '" data-seguir="' + esc(p.memberId) + '">' + (p.sigo ? 'Seguindo' : 'Seguir') + '</button>') + '</div>' +
-          '<div class="grid">' + this.posts.map((x) => '<button data-abrir="' + esc(x._id) + '">' + this.midia(x, true) + (x.tipo === 'video' ? '<i>▶</i>' : '') + '</button>').join('') + '</div>' +
-          (this.posts.length ? '' : '<div class="empty">Nenhum post ainda.</div>') + '</div>' + mais;
+        var p = this.perfil; var nm = p.nome || p.handle || '';
+        var desde = p.entrouEm || p._createdDate; var dd = desde ? new Date(desde) : null;
+        var mes = dd ? ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][dd.getMonth()] + ' ' + dd.getFullYear() : '';
+        centro = '<button class="more voltar" data-voltar>← Voltar ao mural</button><div class="pf">' +
+          '<div class="capa" style="background-image:url(\'' + esc(p.capa || IMG + 'cena-arena-hd.jpg') + '\')"><div class="capa-brilho"></div></div>' +
+          '<div class="pcard"><div class="pav">' + this.av(p, 112) + '</div>' +
+          '<h2 class="pnome' + (nm.length > 14 ? ' lg' : '') + '"><span class="g">' + esc(nm) + '</span></h2>' +
+          '<div class="phdl">@' + esc(p.handle) + (p.area ? ' · <span>' + esc(p.area) + '</span>' : '') + '</div>' +
+          '<div class="pbadges">' + (p.professor ? '<span class="tag prof">★ Professor</span>' : '<span class="tag">🎓 Aluno Global Academy</span>') + (mes ? '<span class="tag dim">Membro desde ' + mes + '</span>' : '') + '</div>' +
+          (p.bio ? '<p class="bio">' + esc(p.bio) + '</p>' : (p.meu ? '<p class="bio vazio">Conte quem você é e o que procura. Toque em Editar perfil.</p>' : '')) +
+          '<div class="nums">' + [['posts', p.posts], ['seguidores', p.seguidores], ['seguindo', p.seguindo]].map((n) => '<div><b class="g">' + num(n[1]) + '</b><span>' + n[0] + '</span></div>').join('') + '</div>' +
+          '<div class="pbtn">' + (p.meu ? '<button class="btn ghost" data-editar>Editar perfil</button><button class="btn gold shine" data-postar>+ Postar</button>'
+            : '<button class="btn ' + (p.sigo ? 'ghost' : 'gold shine') + '" data-seguir="' + esc(p.memberId) + '">' + (p.sigo ? '✓ Seguindo' : '+ Seguir') + '</button><button class="btn ghost" data-share="perfil:' + esc(p.handle) + '">Compartilhar</button>') + '</div></div>' +
+          '<div class="ptabs"><span class="on">Posts</span></div>' +
+          (this.posts.length ? '<div class="grid">' + this.posts.map((x) => '<button data-abrir="' + esc(x._id) + '">' + this.midia(x, true) + (x.tipo === 'video' ? '<i>▶</i>' : '') + '</button>').join('') + '</div>'
+            : '<div class="pvazio"><div class="pvi">✦</div><b>' + (p.meu ? 'Seu mural começa aqui' : 'Nenhum post ainda') + '</b><span>' + (p.meu ? 'Poste um corte, uma narração ou uma arte e apareça para a comunidade.' : 'Quando ' + esc(nm) + ' postar, aparece aqui.') + '</span></div>') +
+          '</div>';
       } else if (!this.perfil && this.u && this.ligado && !this.carregando) {
         centro = '<div class="box empty">Perfil não encontrado. <button class="more" data-voltar>Ir para o feed</button></div>';
       } else {
@@ -263,6 +315,19 @@
       var dock = aluno ? '<button class="btn gold fab" data-postar aria-label="Postar">' + ICO.plus + '</button>'
         : '<div class="dock"><button class="btn gold" data-portao>' + (this.s.logado ? 'Quero ser aluno e postar' : 'Entrar e postar · ser aluno') + '</button><small>Visitante vê tudo. Postar, curtir e comentar é para alunos.</small></div>';
       this.app.innerHTML = top + '<div class="wrap">' + lado + '<main>' + centro + '</main>' + dir + '</div>' + dock;
+      var sent = this.r.getElementById('sent');
+      if (this.io) this.io.disconnect();
+      if (sent && 'IntersectionObserver' in window) {
+        this.io = new IntersectionObserver((ents) => {
+          if (!ents.some((e) => e.isIntersecting) || this.puxando) return;
+          this.puxando = true;
+          var lim = this.lim || 10;
+          if (lim < this.totalItens) { this.lim = lim + 10; this.render(); this.puxando = false; }
+          else if (!this.fim) { this.buscar(false).catch(() => {}).then(() => { this.lim = (this.lim || 10) + 10; this.puxando = false; this.render(); }); }
+          else this.puxando = false;
+        }, { rootMargin: '600px 0px' });
+        this.io.observe(sent);
+      }
     }
     portao() {
       var logado = this.s.logado;
@@ -292,6 +357,12 @@
       if (d.voltar != null) return this.voltarFeed();
       if (d.mais != null) return this.buscar(false).catch((x) => this.erro(x));
       if (d.portao != null) return this.portao();
+      if (d.share && d.share.indexOf('perfil:') === 0) {
+        var pu = location.origin + location.pathname + '?u=' + encodeURIComponent(d.share.slice(7));
+        if (navigator.share) return navigator.share({ title: 'Perfil na Comunidade Global Academy', url: pu }).catch(() => {});
+        try { await navigator.clipboard.writeText(pu); this.aviso('Link do perfil copiado!'); } catch (x) { this.aviso(pu); }
+        return;
+      }
       if (d.share) {
         var url = location.origin + location.pathname + '?p=' + d.share;
         if (navigator.share) return navigator.share({ title: 'Comunidade Global Academy', url: url }).catch(() => {});
