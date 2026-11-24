@@ -20,7 +20,8 @@
     '.ga-mb a.on{border-color:#ffc43d;box-shadow:0 0 14px rgba(255,196,61,.45)}' +
     '.ga-mb a span{font-size:20px;flex:none}' +
     '.ga-mb a.dest{grid-column:1/-1;background:linear-gradient(180deg,#ffe08a,#ffb21a);color:#2a1600 !important;border:0;justify-content:center;text-transform:uppercase;letter-spacing:.05em}' +
-    'html.ga-membro body,html.ga-membro #SITE_CONTAINER{background:linear-gradient(180deg,#2a1470,#120838) !important}';
+    '.ga-mb a:last-child:nth-child(even){grid-column:1/-1;justify-content:center}' +
+    'html.ga-membro body,html.ga-membro #SITE_CONTAINER{background:linear-gradient(180deg,#2a1470,#120838) !important}html.ga-membro #PAGES_CONTAINER [data-hook="bgLayers"]{opacity:0 !important}';
   function eMembro() { return /^\/(account|profile)\//.test(location.pathname) && window.innerWidth < 900; }
   function perfilUrl() {
     var a = document.querySelector('a[href*="/profile/"]');
