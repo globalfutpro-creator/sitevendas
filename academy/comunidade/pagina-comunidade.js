@@ -27,7 +27,7 @@ $w.onReady(async function () {
   authentication.onLogin(sessao);
   // tudo em paralelo: a comunidade abre de uma vez
   try {
-    const [ses, feed, top] = await Promise.all([C.sessao(), C.feed({}), C.maisSeguidos()]);
-    el.setAttribute('inicio', JSON.stringify({ sessao: ses, feed, top }));
+    const [ses, feed, top, membros] = await Promise.all([C.sessao(), C.feed({}), C.maisSeguidos(), C.membros()]);
+    el.setAttribute('inicio', JSON.stringify({ sessao: ses, feed, top, membros }));
   } catch (e) { await sessao(); }
 });

@@ -8,6 +8,8 @@ import { orders } from 'wix-pricing-plans-backend';
 import { files } from 'wix-media.v2';
 import { collections } from 'wix-data.v2';
 import { elevate } from 'wix-auth';
+import { groups, members as gMembros } from 'wix-groups-backend';
+import { members as sMembros } from 'wix-members-backend';
 
 // Planos que liberam a comunidade (Global Academy 12 meses). Acrescentar outros IDs se houver.
 const PLANOS_ALUNO = ['fc7d621e-2fd9-42fa-9be9-7407e5f9495a'];
@@ -37,10 +39,12 @@ async function quemSou() {
 async function perfilDe(memberId, m) {
   const r = await wixData.query('ComuPerfis').eq('memberId', memberId).limit(1).find(OPT);
   if (r.items.length) return r.items[0];
-  const nick = (m && m.profile && (m.profile.slug || m.profile.nickname)) || 'aluno';
+  const nick = (m && m.profile && (m.profile.nickname || m.profile.slug)) || 'aluno';
+  const base = String(nick).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9._]/g, '').slice(0, 22) || 'aluno';
+  const usado = await wixData.query('ComuPerfis').eq('handle', base).count(OPT);
   const novo = {
     memberId,
-    handle: String(nick).toLowerCase().replace(/[^a-z0-9._]/g, '').slice(0, 24) || ('aluno' + Date.now() % 100000),
+    handle: usado ? base + (Date.now() % 1000) : base,
     nome: (m && m.profile && m.profile.nickname) || 'Aluno',
     foto: (m && m.profile && m.profile.photo && m.profile.photo.url) || '',
     capa: '', area: '', bio: '', seguidores: 0, seguindo: 0, posts: 0, professor: false
@@ -135,9 +139,9 @@ export const uploadUrl = webMethod(Permissions.SiteMember, async ({ tipo, nome, 
 
 export const postar = webMethod(Permissions.SiteMember, async ({ midia, tipo, legenda, aba }) => {
   const s = await exigirAluno();
-  if (!midia) throw new Error('SEM_MIDIA');
+  if (!midia && !limpa(legenda, 5)) throw new Error('SEM_MIDIA');
   const p = await wixData.insert('ComuPosts', {
-    autorId: s.membro._id, midia: String(midia), tipo: tipo === 'video' ? 'video' : 'imagem',
+    autorId: s.membro._id, midia: midia ? String(midia) : '', tipo: !midia ? 'texto' : (tipo === 'video' ? 'video' : 'imagem'),
     legenda: limpa(legenda, LIM.legenda), aba: ABAS.includes(aba) ? aba : 'geral',
     curtidas: 0, comentarios: 0, oculto: false
   }, OPT);
@@ -236,4 +240,57 @@ export const instalarColecoes = webMethod(Permissions.Admin, async () => {
     } catch (e) { feito.push(id + ': ' + String((e && e.message) || e).slice(0, 120)); }
   }
   return feito;
+});
+
+// Lista de quem está na comunidade (perfis), mais antigos primeiro
+export const membros = webMethod(Permissions.Anyone, async () => {
+  const r = await wixData.query('ComuPerfis').ascending('entrouEm').limit(200).find(OPT);
+  return r.items;
+});
+
+// Importa (espelha) o grupo "Networking nos Games": membros, posts e comentários. Só admin, pode rodar de novo.
+const POSTS_GRUPO = [
+  { autor: 'ADM', quando: '2025-07-03T15:00:00Z', curtidas: 2, texto: 'Networking gamer! Bem-vindo ao grupo! Aqui os talentos já consolidados se encontram com os novos membros, trocando informações, conteúdos, serviços e muito mais. Aproveite o espaço para postar vídeos, artes, roteiros etc. Mostre o seu talento para que outras pessoas possam contratar os seus serviços, ou até fechar grandes parcerias.', comentarios: [] },
+  { autor: 'Caldana', quando: '2025-07-31T15:00:00Z', curtidas: 2, texto: 'Olá amigos!!!', comentarios: [] },
+  { autor: 'Lucas Augusto', quando: '2026-02-14T15:00:00Z', curtidas: 5, texto: 'Fala galera', comentarios: [{ autor: 'Caldana', texto: 'Bom te ver por aqui irmão! 👍' }] }
+];
+export const importarGrupo = webMethod(Permissions.Admin, async () => {
+  const log = [];
+  const g = await groups.getGroupBySlug('networking-nos-games', /** @type {any} */ ({ suppressAuth: true }));
+  let lista = [];
+  for (let skip = 0; skip < 1000; skip += 100) {
+    const r = /** @type {any} */ (await gMembros.listGroupMembers(g._id, /** @type {any} */ ({ limit: 100, skip, suppressAuth: true })));
+    const it = (r && (r.items || r)) || [];
+    lista = lista.concat(it);
+    if (it.length < 100) break;
+  }
+  log.push('membros no grupo: ' + lista.length);
+  /** @type {Object<string,string>} */
+  const porNome = {};
+  for (const it of lista) {
+    const id = it.siteMemberId || it.memberId || it._id;
+    let m = null;
+    try { m = await sMembros.getMember(id, { fieldsets: ['PUBLIC'] }); } catch (e) { m = null; }
+    const p = await perfilDe(id, m);
+    const foto = (m && m.profile && m.profile.photo && m.profile.photo.url) || p.foto || '';
+    const nome = (m && m.profile && m.profile.nickname) || p.nome;
+    await wixData.update('ComuPerfis', { ...p, foto, nome, entrouEm: it.joinedDate ? new Date(it.joinedDate) : (p.entrouEm || new Date()) }, OPT);
+    porNome[String(nome).trim().toLowerCase()] = id;
+  }
+  for (const po of POSTS_GRUPO) {
+    const autorId = porNome[po.autor.toLowerCase()];
+    if (!autorId) { log.push('sem autor: ' + po.autor); continue; }
+    const ja = await wixData.query('ComuPosts').eq('autorId', autorId).eq('legenda', po.texto).count(OPT);
+    if (ja) { log.push('já existe: ' + po.texto.slice(0, 20)); continue; }
+    const novo = await wixData.insert('ComuPosts', { autorId, midia: '', tipo: 'texto', legenda: po.texto, aba: 'geral', curtidas: po.curtidas, comentarios: po.comentarios.length, oculto: false, quando: new Date(po.quando) }, OPT);
+    for (const c of po.comentarios) {
+      const cid = porNome[c.autor.toLowerCase()];
+      const cp = cid ? (await wixData.query('ComuPerfis').eq('memberId', cid).limit(1).find(OPT)).items[0] : null;
+      await wixData.insert('ComuComentarios', { postId: novo._id, memberId: cid || '', handle: cp ? cp.handle : c.autor, texto: c.texto }, OPT);
+    }
+    const pa = (await wixData.query('ComuPerfis').eq('memberId', autorId).limit(1).find(OPT)).items[0];
+    if (pa) await wixData.update('ComuPerfis', { ...pa, posts: (pa.posts || 0) + 1 }, OPT);
+    log.push('post importado: ' + po.texto.slice(0, 20));
+  }
+  return log;
 });

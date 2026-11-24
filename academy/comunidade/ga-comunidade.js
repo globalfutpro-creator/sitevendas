@@ -6,7 +6,7 @@
   var IMG = 'https://cdn.jsdelivr.net/gh/globalfutpro-creator/sitevendas@18e97ce3a028a0aecedebded63469e07687417b4/academy/img/';
   var ABAS = [['todos', 'Feed'], ['alta', 'Em alta'], ['narracao', 'Narração'], ['edicao', 'Edição'], ['artes', 'Artes'], ['jogo', 'Jogo']];
   var LIM = { imagemMB: 10, videoMB: 100, videoSeg: 90 };
-  var ERROS = { ENTRAR: 'Entre na sua conta para continuar.', SO_ALUNOS: 'Só alunos da Global Academy podem fazer isso.', HANDLE_USADO: 'Esse @ já está em uso.', VAZIO: 'Escreva alguma coisa.', SEM_MIDIA: 'Escolha um vídeo ou uma imagem.', FORMATO: 'Formato não aceito. Use MP4, JPG, PNG ou WEBP.' };
+  var ERROS = { ENTRAR: 'Entre na sua conta para continuar.', SO_ALUNOS: 'Só alunos da Global Academy podem fazer isso.', HANDLE_USADO: 'Esse @ já está em uso.', VAZIO: 'Escreva alguma coisa.', SEM_MIDIA: 'Escreva algo ou escolha um vídeo ou uma imagem.', FORMATO: 'Formato não aceito. Use MP4, JPG, PNG ou WEBP.' };
   if (!document.getElementById('ga-comu-fonts')) {
     var l = document.createElement('link'); l.id = 'ga-comu-fonts'; l.rel = 'stylesheet';
     l.href = 'https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Barlow:wght@400;500;600;700;800&display=swap';
@@ -17,7 +17,8 @@
   var quando = function (d) {
     var s = (Date.now() - new Date(d).getTime()) / 1000;
     if (s < 60) return 'agora'; if (s < 3600) return Math.floor(s / 60) + ' min'; if (s < 86400) return Math.floor(s / 3600) + ' h';
-    return Math.floor(s / 86400) + ' d';
+    if (s < 604800) return Math.floor(s / 86400) + ' d';
+    var dt = new Date(d); return dt.getDate() + ' ' + ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][dt.getMonth()] + (dt.getFullYear() !== new Date().getFullYear() ? ' ' + dt.getFullYear() : '');
   };
   var ICO = {
     heart: '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
@@ -102,6 +103,20 @@
     '.prog{height:6px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;margin:0 0 12px}.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#17d9ff,#ffc43d)}',
     '.cmi{display:flex;gap:8px;position:sticky;bottom:-18px;padding:10px 0 0;background:inherit}.cmi .fld{margin:0}',
     '.sk .skc{width:44px;height:44px;border-radius:50%}.sk .skc,.sk .skl,.sk .skm{display:block;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.16),rgba(255,255,255,.06));background-size:200% 100%;animation:shim 1.1s linear infinite}.sk .skl{height:12px;border-radius:6px}.sk .skm{aspect-ratio:4/5;max-height:420px}@keyframes shim{to{background-position:-200% 0}}',
+    '.hero{position:relative;overflow:hidden;margin:4px 0 18px;padding:26px 20px 22px;border-radius:24px;background:radial-gradient(120% 90% at 100% 0%,rgba(255,196,61,.28),transparent 55%),radial-gradient(90% 80% at 0% 100%,rgba(23,217,255,.22),transparent 60%),linear-gradient(160deg,#3a1c8f,#1f1056);border:1px solid rgba(255,196,61,.55);box-shadow:0 0 34px rgba(155,48,255,.45)}',
+    '.hero .kick{display:inline-block;font:800 11px Barlow;letter-spacing:.14em;text-transform:uppercase;color:#5ff0ff;margin-bottom:8px}',
+    '.hero h1{margin:0;font:700 50px/.88 Teko,sans-serif;text-transform:uppercase;letter-spacing:.01em}@media(min-width:700px){.hero h1{font-size:66px}}',
+    '.hero p{margin:10px 0 16px;color:#efe6ff;font-size:15px;line-height:1.5;max-width:460px}',
+    '.hst{display:flex;align-items:center;gap:12px;font-size:14px;color:#cdb8ff}.hst b{color:#ffc43d;font:700 24px Teko;vertical-align:-3px}',
+    '.stack{display:flex}.stack .ring{margin-left:-10px}.stack .ring:first-child{margin-left:0}',
+    '.sec h4{margin:0 2px 2px;font:700 22px Teko;text-transform:uppercase;letter-spacing:.02em}.sec h4 small{color:#ffc43d;font-size:18px;margin-left:4px}',
+    '.tl{position:relative;padding-left:20px;margin-top:14px}.tl:before{content:"";position:absolute;left:6px;top:6px;bottom:0;width:2px;background:linear-gradient(#ffc43d,#9b30ff 60%,transparent)}',
+    '.tl>article:before{content:"";position:absolute;left:-19px;top:22px;width:12px;height:12px;border-radius:50%;background:#ffc43d;box-shadow:0 0 12px #ffc43d}.tl>article{position:relative;overflow:visible}.tl>article>.media{overflow:hidden}',
+    '.txt{margin:0 14px 6px;padding:22px 18px;border-radius:16px;background:linear-gradient(135deg,rgba(155,48,255,.35),rgba(23,217,255,.18));border:1px solid rgba(185,140,255,.35);font-size:16px;line-height:1.55;color:#fff;white-space:pre-wrap;word-break:break-word}',
+    '.txt.big{font:700 30px/1.05 Teko,sans-serif;text-transform:uppercase;letter-spacing:.01em;text-align:center;padding:34px 18px}',
+    '.grid .txt{margin:0;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;padding:8px;border-radius:6px}.grid .txt.big{font-size:18px}',
+    '.hdl{color:#17d9ff;font-weight:700;font-size:13px}',
+    '.compose{margin-bottom:4px}',
     '.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:30;background:#1f1056;border:1px solid #ffc43d;border-radius:999px;padding:10px 18px;font-weight:700;box-shadow:0 0 24px rgba(255,196,61,.4)}'
   ].join('\n');
 
@@ -114,14 +129,14 @@
       this.r = this.attachShadow({ mode: 'open' });
       this.s = { logado: false, aluno: false };
       this.pend = {}; this.seq = 0;
-      this.aba = 'todos'; this.posts = []; this.fim = false; this.top = [];
+      this.aba = 'todos'; this.posts = []; this.fim = false; this.top = []; this.membros = [];
       this.u = new URLSearchParams(location.search).get('u');
     }
     connectedCallback() {
       this.r.innerHTML = '<style>' + CSS + '</style><div id="app"></div>';
       this.app = this.r.getElementById('app');
       this.app.addEventListener('click', (e) => this.clique(e));
-      if (!this.u) { try { var cc = JSON.parse(localStorage.getItem('ga-comu-cache') || 'null'); if (cc && cc.feed) { this.posts = cc.feed.posts || []; this.top = cc.top || []; this.fim = cc.feed.fim; } } catch (e) {} }
+      if (!this.u) { try { var cc = JSON.parse(localStorage.getItem('ga-comu-cache') || 'null'); if (cc && cc.feed) { this.posts = cc.feed.posts || []; this.top = cc.top || []; this.membros = cc.membros || []; this.fim = cc.feed.fim; } } catch (e) {} }
       this.render();
       // sem o código da página (pré-visualização), mostra o aviso em vez de travar
       this.boot = setTimeout(() => { if (!this.ligado) { this.ligado = true; this.carregar(); } }, 8000);
@@ -130,10 +145,10 @@
       if (!v) return;
       var d; try { d = JSON.parse(v); } catch (e) { return; }
       if (nome === 'inicio') {
-        this.ligado = true; this.s = d.sessao || this.s; this.top = d.top || [];
+        this.ligado = true; this.s = d.sessao || this.s; this.top = d.top || []; this.membros = d.membros || this.membros;
         if (!this.u) { this.posts = d.feed.posts; this.fim = d.feed.fim; this.carregando = false; this.render(); }
         else this.carregar();
-        try { localStorage.setItem('ga-comu-cache', JSON.stringify({ feed: d.feed, top: d.top })); } catch (e) {}
+        try { localStorage.setItem('ga-comu-cache', JSON.stringify({ feed: d.feed, top: d.top, membros: d.membros })); } catch (e) {}
         return;
       }
       if (nome === 'sessao') {
@@ -185,6 +200,7 @@
     }
     tagDe(p) { return p && p.professor ? '<span class="tag prof">Professor</span>' : '<span class="tag">Aluno</span>'; }
     midia(p, grid) {
+      if (p.tipo === 'texto' || !p.midia) { var t = esc(p.legenda || ''); return '<div class="txt' + (t.length < 90 ? ' big' : '') + '">' + (grid ? t.slice(0, 80) : t) + '</div>'; }
       var u = esc(p.midia);
       if (p.tipo === 'video') return '<video src="' + u + '#t=0.5" ' + (grid ? 'muted playsinline preload="metadata"' : 'controls playsinline preload="metadata"') + '></video>';
       return '<img src="' + u + '" alt="" loading="lazy">';
@@ -193,14 +209,14 @@
       var a = p.autor || {}; var meu = this.s.perfil && this.s.perfil.memberId === p.autorId;
       var cm = (p.ultimos || []).map((c) => '<p><b>' + esc(c.handle) + '</b> ' + esc(c.texto) + '</p>').join('');
       return '<article class="box post" data-post="' + esc(p._id) + '">' +
-        '<div class="ph">' + this.av(a) + '<button class="nm" data-perfil="' + esc(a.handle) + '"><b>' + esc(a.handle || 'aluno') + '</b>' + this.tagDe(a) + '<small>' + esc(a.area || '') + (a.area ? ' · ' : '') + quando(p._createdDate) + '</small></button>' +
+        '<div class="ph">' + this.av(a) + '<button class="nm" data-perfil="' + esc(a.handle) + '"><b>' + esc(a.nome || a.handle || 'aluno') + '</b>' + this.tagDe(a) + '<small>@' + esc(a.handle || '') + ' · ' + quando(p.quando || p._createdDate) + '</small></button>' +
         (meu ? '' : '<button class="seg" data-seguir="' + esc(p.autorId) + '">Seguir</button>') + '</div>' +
-        '<div class="media">' + this.midia(p) + '</div>' +
+        (p.tipo === 'texto' || !p.midia ? this.midia(p) : '<div class="media">' + this.midia(p) + '</div>') +
         '<div class="act"><button class="lk' + (p.curti ? ' on' : '') + '" data-curtir="' + esc(p._id) + '">' + ICO.heart + '<span>' + num(p.curtidas) + '</span></button>' +
         '<button data-coment="' + esc(p._id) + '">' + ICO.com + '<span>' + num(p.comentarios) + '</span></button>' +
         '<button data-share="' + esc(p._id) + '" aria-label="Compartilhar">' + ICO.send + '</button>' +
         (this.s.admin ? '<button data-ocultar="' + esc(p._id) + '" style="margin-left:auto;font-size:12px;color:#ff8fa3">Tirar do ar</button>' : '<button data-denuncia="' + esc(p._id) + '" style="margin-left:auto;font-size:12px;color:#9f8ad8">Denunciar</button>') + '</div>' +
-        (p.legenda ? '<div class="cap"><b>' + esc(a.handle) + '</b> ' + esc(p.legenda) + '</div>' : '') +
+        (p.legenda && p.tipo !== 'texto' && p.midia ? '<div class="cap"><b>' + esc(a.handle) + '</b> ' + esc(p.legenda) + '</div>' : '') +
         (cm ? '<div class="cm">' + cm + '</div>' : '') +
         (p.comentarios > 2 ? '<button class="vm" data-coment="' + esc(p._id) + '">Ver os ' + p.comentarios + ' comentários</button>' : '') +
         (this.s.aluno ? '' : '<div class="lock">' + ICO.lock + '<span>Curtir e comentar: só alunos</span><button data-portao>Quero ser aluno</button></div>') +
@@ -213,6 +229,11 @@
       var tabs = ABAS.map((t) => '<button class="tab' + (this.aba === t[0] ? ' on' : '') + '" data-aba="' + t[0] + '">' + t[1] + '</button>').join('');
       var nav = ABAS.map((t) => '<button class="' + (this.aba === t[0] && !this.perfil ? 'on' : '') + '" data-aba="' + t[0] + '">' + t[1] + '</button>').join('') +
         (this.s.perfil ? '<button data-perfil="' + esc(this.s.perfil.handle) + '">Meu perfil</button>' : '');
+      var mem = this.membros.length ? this.membros : this.top;
+      var hero = '<section class="hero"><span class="kick">Rede social dos alunos · Global Academy</span><h1>Mural da <span class="g">Comunidade</span></h1>' +
+        '<p>Cortes, narrações, artes e jogadas. Mostre o seu trabalho, siga quem faz e seja visto por quem contrata.</p>' +
+        '<div class="hst"><div class="stack">' + mem.slice(0, 6).map((p) => this.av(p, 34)).join('') + '</div><span><b>' + (mem.length || '…') + '</b> na comunidade</span></div></section>';
+      var quem = mem.length ? '<div class="sec"><h4>Quem está na comunidade <small>' + mem.length + '</small></h4><div class="stories">' + mem.map((p) => '<button class="st" data-perfil="' + esc(p.handle) + '">' + this.av(p, 56) + '<span>' + esc(p.nome || p.handle) + '</span></button>').join('') + '</div></div>' : '';
       var stories = this.top.length ? '<div class="stories">' + this.top.map((p) => '<button class="st" data-perfil="' + esc(p.handle) + '">' + this.av(p, 56) + '<span>' + esc(p.handle) + '</span></button>').join('') + '</div>' : '';
       var compose = aluno ? '<div class="box compose" data-postar>' + this.av(this.s.perfil) + '<span class="tx">Mostre o seu trabalho: corte, narração ou arte…</span>' + ICO.plus + '</div>' : '';
       var lista = this.falhou ? '<div class="box empty">A comunidade está sendo ligada. Volte em instantes.</div>'
@@ -223,7 +244,7 @@
         var p = this.perfil;
         centro = '<button class="more" data-voltar style="margin:0 0 12px">← Voltar ao feed</button><div class="box pf">' +
           '<div class="capa" style="background-image:url(\'' + esc(p.capa || IMG + 'cena-arena-hd.jpg') + '\')"></div>' +
-          '<div class="hd">' + this.av(p, 88) + '<div style="padding-bottom:6px;min-width:0"><h2>' + esc(p.handle) + '</h2>' + this.tagDe(p).replace('class="tag', 'style="margin:4px 0 0" class="tag') + (p.area ? ' <span class="tag">' + esc(p.area) + '</span>' : '') + '</div></div>' +
+          '<div class="hd">' + this.av(p, 88) + '<div style="padding-bottom:6px;min-width:0;flex:1"><h2 style="font-size:' + ((p.nome || p.handle || '').length > 14 ? 26 : 36) + 'px">' + esc(p.nome || p.handle) + '</h2><small class="hdl">@' + esc(p.handle) + '</small><br>' + this.tagDe(p).replace('class="tag', 'style="margin:4px 0 0" class="tag') + (p.area ? ' <span class="tag">' + esc(p.area) + '</span>' : '') + '</div></div>' +
           (p.bio ? '<p class="bio">' + esc(p.bio) + '</p>' : '') +
           '<div class="nums"><div><b class="g">' + num(p.posts) + '</b><span>posts</span></div><div><b class="g">' + num(p.seguidores) + '</b><span>seguidores</span></div><div><b class="g">' + num(p.seguindo) + '</b><span>seguindo</span></div></div>' +
           '<div class="pbtn">' + (p.meu ? '<button class="btn ghost" data-editar>Editar perfil</button><button class="btn gold" data-postar>Postar</button>'
@@ -233,7 +254,7 @@
       } else if (!this.perfil && this.u && this.ligado && !this.carregando) {
         centro = '<div class="box empty">Perfil não encontrado. <button class="more" data-voltar>Ir para o feed</button></div>';
       } else {
-        centro = '<div class="tabs mob">' + tabs + '</div>' + stories + '<div class="feed">' + compose + lista + mais + '</div>';
+        centro = hero + quem + '<div class="tabs mob">' + tabs + '</div>' + compose + '<div class="feed tl">' + lista + '</div>' + mais;
       }
       var lado = '<div class="side"><div style="position:sticky;top:80px"><div class="nav">' + nav + '</div>' + (aluno ? '<button class="btn gold" data-postar style="width:100%;margin-top:14px">+ Postar</button>' : '<button class="btn gold" data-portao style="width:100%;margin-top:14px">Ser aluno e postar</button>') + '</div></div>';
       var dir = '<div class="side"><div style="position:sticky;top:80px;display:flex;flex-direction:column;gap:18px">' +
@@ -326,18 +347,18 @@
     abrirPostar() {
       var arq = null, tipo = 'imagem';
       var ov = this.modal('<h3 class="g">Novo post</h3>' +
-        '<label class="drop" id="dz"><span style="font-size:30px">＋</span><b>Escolha um vídeo ou uma imagem</b><small>Vídeo até ' + LIM.videoSeg + ' s e ' + LIM.videoMB + ' MB · imagem até ' + LIM.imagemMB + ' MB</small><input type="file" accept="video/mp4,video/quicktime,video/webm,image/jpeg,image/png,image/webp" hidden id="fi"></label>' +
+        '<label class="drop" id="dz"><span style="font-size:30px">＋</span><b>Vídeo ou imagem (opcional)</b><small>Vídeo até ' + LIM.videoSeg + ' s e ' + LIM.videoMB + ' MB · imagem até ' + LIM.imagemMB + ' MB</small><input type="file" accept="video/mp4,video/quicktime,video/webm,image/jpeg,image/png,image/webp" hidden id="fi"></label>' +
         '<select class="fld" id="ab">' + ABAS.slice(2).map((a) => '<option value="' + a[0] + '">' + a[1] + '</option>').join('') + '<option value="geral">Geral</option></select>' +
         '<textarea class="fld" id="lg" maxlength="600" placeholder="Legenda: conte o que você fez"></textarea>' +
         '<div class="prog" hidden id="pg"><i></i></div><p class="msg" id="ms"></p>' +
         '<div class="row"><button class="btn ghost" data-m="fechar">Cancelar</button><button class="btn gold" data-m="pub">Publicar</button></div>', async (k, o, btn) => {
         if (k !== 'pub') return false;
         var ms = o.querySelector('#ms');
-        if (!arq) { ms.textContent = ERROS.SEM_MIDIA; return false; }
+        if (!arq && !o.querySelector('#lg').value.trim()) { ms.textContent = ERROS.SEM_MIDIA; return false; }
         btn.disabled = true; btn.textContent = 'Enviando…';
         try {
-          var up = await this.chamar('uploadUrl', { tipo: tipo === 'video' ? 'video' : 'imagem', nome: arq.name, mime: arq.type });
-          var url = await this.enviar(arq, up, tipo, o.querySelector('#pg'));
+          var url = '';
+          if (arq) { var up = await this.chamar('uploadUrl', { tipo: tipo === 'video' ? 'video' : 'imagem', nome: arq.name, mime: arq.type }); url = await this.enviar(arq, up, tipo, o.querySelector('#pg')); }
           var novo = await this.chamar('postar', { midia: url, tipo: tipo, legenda: o.querySelector('#lg').value, aba: o.querySelector('#ab').value });
           novo.autor = this.s.perfil; novo.ultimos = []; this.posts.unshift(novo);
           if (this.s.perfil) this.s.perfil.posts = (this.s.perfil.posts || 0) + 1;
