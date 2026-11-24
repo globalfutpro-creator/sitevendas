@@ -6,6 +6,8 @@ import wixData from 'wix-data';
 import { currentMember } from 'wix-members-backend';
 import { orders } from 'wix-pricing-plans-backend';
 import { mediaManager } from 'wix-media-backend';
+import { collections } from 'wix-data.v2';
+import { elevate } from 'wix-auth';
 
 // Planos que liberam a comunidade (Global Academy 12 meses). Acrescentar outros IDs se houver.
 const PLANOS_ALUNO = ['fc7d621e-2fd9-42fa-9be9-7407e5f9495a'];
@@ -190,4 +192,29 @@ export const ocultar = webMethod(Permissions.SiteMember, async (postId) => {
   const p = await wixData.get('ComuPosts', postId, OPT);
   p.oculto = true;
   return wixData.update('ComuPosts', p, OPT);
+});
+
+// Instalação: cria as coleções (rodar uma vez pelo botão Executar do editor, só admin)
+const COLS = {
+  ComuPerfis: [['memberId','TEXT'],['handle','TEXT'],['nome','TEXT'],['foto','URL'],['capa','URL'],['area','TEXT'],['bio','TEXT'],['seguidores','NUMBER'],['seguindo','NUMBER'],['posts','NUMBER'],['professor','BOOLEAN']],
+  ComuPosts: [['autorId','TEXT'],['midia','URL'],['tipo','TEXT'],['legenda','TEXT'],['aba','TEXT'],['curtidas','NUMBER'],['comentarios','NUMBER'],['oculto','BOOLEAN']],
+  ComuCurtidas: [['postId','TEXT'],['memberId','TEXT']],
+  ComuComentarios: [['postId','TEXT'],['memberId','TEXT'],['handle','TEXT'],['texto','TEXT']],
+  ComuSeguidores: [['seguidorId','TEXT'],['seguidoId','TEXT']],
+  ComuDenuncias: [['postId','TEXT'],['memberId','TEXT'],['motivo','TEXT']]
+};
+export const instalarColecoes = webMethod(Permissions.Admin, async () => {
+  const criar = elevate(collections.createDataCollection);
+  const feito = [];
+  for (const [id, campos] of Object.entries(COLS)) {
+    try {
+      await criar({
+        _id: id, displayName: id,
+        fields: campos.map(([key, type]) => ({ key, displayName: key, type })),
+        permissions: { read: 'ANYONE', insert: 'ADMIN', update: 'ADMIN', remove: 'ADMIN' }
+      });
+      feito.push(id + ': criada');
+    } catch (e) { feito.push(id + ': ' + String((e && e.message) || e).slice(0, 120)); }
+  }
+  return feito;
 });
