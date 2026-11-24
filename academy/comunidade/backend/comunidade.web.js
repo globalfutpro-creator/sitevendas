@@ -258,11 +258,12 @@ export const importarGrupo = webMethod(Permissions.Admin, async () => {
   const log = [];
   const g = await groups.getGroupBySlug('networking-nos-games', /** @type {any} */ ({ suppressAuth: true }));
   let lista = [];
-  for (let skip = 0; skip < 1000; skip += 100) {
+  for (let skip = 0; skip < 1000;) {
     const r = /** @type {any} */ (await gMembros.listGroupMembers(g._id, /** @type {any} */ ({ limit: 100, skip, suppressAuth: true })));
     const it = (r && (r.items || r)) || [];
+    if (!it.length) break;
     lista = lista.concat(it);
-    if (it.length < 100) break;
+    skip += it.length;
   }
   log.push('membros no grupo: ' + lista.length);
   /** @type {Object<string,string>} */
@@ -277,15 +278,16 @@ export const importarGrupo = webMethod(Permissions.Admin, async () => {
     const nome = (m && m.profile && m.profile.nickname) || p.nome;
     await wixData.update('ComuPerfis', { ...p, foto, nome, entrouEm: it.joinedDate ? new Date(it.joinedDate) : (p.entrouEm || new Date()) }, OPT);
     porNome[String(nome).trim().toLowerCase()] = id;
+    log.push(String(nome) + ' | ' + ((m && m.profile && m.profile.slug) || '') + ' | ' + id);
   }
   for (const po of POSTS_GRUPO) {
-    const autorId = porNome[po.autor.toLowerCase()];
+    const autorId = porNome[po.autor.toLowerCase()] || Object.entries(porNome).find(([k]) => k.indexOf(po.autor.toLowerCase().split(' ')[0]) === 0)?.[1];
     if (!autorId) { log.push('sem autor: ' + po.autor); continue; }
     const ja = await wixData.query('ComuPosts').eq('autorId', autorId).eq('legenda', po.texto).count(OPT);
     if (ja) { log.push('já existe: ' + po.texto.slice(0, 20)); continue; }
     const novo = await wixData.insert('ComuPosts', { autorId, midia: '', tipo: 'texto', legenda: po.texto, aba: 'geral', curtidas: po.curtidas, comentarios: po.comentarios.length, oculto: false, quando: new Date(po.quando) }, OPT);
     for (const c of po.comentarios) {
-      const cid = porNome[c.autor.toLowerCase()];
+      const cid = porNome[c.autor.toLowerCase()] || Object.entries(porNome).find(([k]) => k.indexOf(c.autor.toLowerCase().split(' ')[0]) === 0)?.[1];
       const cp = cid ? (await wixData.query('ComuPerfis').eq('memberId', cid).limit(1).find(OPT)).items[0] : null;
       await wixData.insert('ComuComentarios', { postId: novo._id, memberId: cid || '', handle: cp ? cp.handle : c.autor, texto: c.texto }, OPT);
     }
