@@ -422,8 +422,13 @@ const POSTS_GRUPO = [
 ]
 }
 ];
-export const importarGrupo = webMethod(Permissions.Admin, async () => {
+export const importarGrupo = webMethod(Permissions.Admin, async (opc) => {
   const log = [];
+  const soPosts = !!(opc && opc.soPosts);
+  /** @type {Object<string,string>} */
+  const porNome = {};
+  if (soPosts) { const todos = await wixData.query('ComuPerfis').limit(200).find(OPT); for (const p of todos.items) { porNome[String(p.nome || '').trim().toLowerCase()] = p.memberId; if (p.handle) porNome[String(p.handle).toLowerCase()] = porNome[String(p.handle).toLowerCase()] || p.memberId; } if (!porNome['adm']) { const adm = todos.items.find((p) => /^(globalacademy|globalfutpro)/.test(p.handle || '')); if (adm) porNome['adm'] = adm.memberId; } }
+  else {
   const g = await groups.getGroupBySlug('networking-nos-games', /** @type {any} */ ({ suppressAuth: true }));
   let lista = [];
   const vistos = new Set();
@@ -437,8 +442,6 @@ export const importarGrupo = webMethod(Permissions.Admin, async () => {
     if (tot && lista.length >= tot && r.metadata.total) break;
   }
   log.push('membros no grupo: ' + lista.length);
-  /** @type {Object<string,string>} */
-  const porNome = {};
   for (const it of lista) {
     const id = it.siteMemberId || it.memberId || it._id;
     let m = null;
@@ -450,6 +453,7 @@ export const importarGrupo = webMethod(Permissions.Admin, async () => {
     await wixData.update('ComuPerfis', { ...p, foto, nome, entrouEm: it.joinedDate ? new Date(it.joinedDate) : (p.entrouEm || new Date()) }, OPT);
     porNome[String(nome).trim().toLowerCase()] = id;
     log.push(String(nome) + ' | ' + ((m && m.profile && m.profile.slug) || '') + ' | ' + id);
+  }
   }
   /** @param {string} n */
   const acha = (n) => { const k = String(n).toLowerCase(); return porNome[k] || Object.entries(porNome).find(([x]) => x.replace(/[^a-z0-9]/g, '') === k.replace(/[^a-z0-9]/g, ''))?.[1] || Object.entries(porNome).find(([x]) => x.indexOf(k.split(' ')[0]) === 0 || k.indexOf(x.split(' ')[0]) === 0)?.[1]; };
