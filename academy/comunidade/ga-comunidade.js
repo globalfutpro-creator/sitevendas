@@ -356,8 +356,11 @@
         x.upload.onprogress = (e) => { if (e.lengthComputable) pg.firstChild.style.width = Math.round(e.loaded / e.total * 100) + '%'; };
         x.onload = () => {
           try {
-            var r = JSON.parse(x.responseText); var f = r.file || r;
+            var r = JSON.parse(x.responseText); var f = Array.isArray(r) ? r[0] : (r.file || r);
             var url = f.url || '';
+            var fu = f.file_url || '';
+            if (!url && fu) url = /^https?:/.test(fu) ? fu : (/^video\//.test(fu) ? 'https://video.wixstatic.com/' + fu : 'https://static.wixstatic.com/' + fu.replace(/^\/+/, ''));
+            if (!url && f.file_name) url = (tipo === 'video' ? 'https://video.wixstatic.com/video/' + f.file_name.replace(/\.[^.]+$/, '') + '/file' : 'https://static.wixstatic.com/media/' + f.file_name);
             if (tipo === 'video' && f.media && f.media.video && f.media.video.resolutions && f.media.video.resolutions.length) {
               var rs = f.media.video.resolutions.slice().sort(function (a, b) { return (b.height || 0) - (a.height || 0); });
               url = (rs.find(function (v) { return (v.height || 0) <= 720; }) || rs[0]).url || url;
