@@ -297,3 +297,11 @@ export const importarGrupo = webMethod(Permissions.Admin, async () => {
   }
   return log;
 });
+
+export const debugGrupo = webMethod(Permissions.Admin, async () => {
+  const g = await groups.getGroupBySlug('networking-nos-games', /** @type {any} */ ({ suppressAuth: true }));
+  const a = /** @type {any} */ (await gMembros.listGroupMembers(g._id, /** @type {any} */ ({ suppressAuth: true })));
+  const b = /** @type {any} */ (await gMembros.listGroupMembers(g._id, /** @type {any} */ ({ limit: 100, skip: 0, suppressAuth: true })));
+  const tipo = (x) => Array.isArray(x) ? 'array:' + x.length : (x && typeof x === 'object' ? 'obj:' + Object.keys(x).join(',') : typeof x);
+  return { gid: g._id, total: g.membersCount, a: tipo(a), aItems: a && a.items ? tipo(a.items) : '', amostra: JSON.stringify((a.items || a)[0] || null).slice(0, 400), b: tipo(b), bItems: b && b.items ? tipo(b.items) : '' };
+});
