@@ -258,12 +258,15 @@ export const importarGrupo = webMethod(Permissions.Admin, async () => {
   const log = [];
   const g = await groups.getGroupBySlug('networking-nos-games', /** @type {any} */ ({ suppressAuth: true }));
   let lista = [];
+  const vistos = new Set();
   for (let skip = 0; skip < 1000;) {
-    const r = /** @type {any} */ (await gMembros.listGroupMembers(g._id, /** @type {any} */ ({ limit: 100, skip, suppressAuth: true })));
-    const it = (r && (r.items || r)) || [];
+    const r = /** @type {any} */ (await gMembros.listGroupMembers(g._id, /** @type {any} */ ({ limit: 100, skip, paging: { limit: 100, offset: skip }, suppressAuth: true })));
+    const it = ((r && (r.members || r.items)) || []).filter((x) => { const k = x.siteMemberId || x.memberId || x._id; if (vistos.has(k)) return false; vistos.add(k); return true; });
     if (!it.length) break;
     lista = lista.concat(it);
     skip += it.length;
+    const tot = r && r.metadata && (r.metadata.total || r.metadata.count);
+    if (tot && lista.length >= tot && r.metadata.total) break;
   }
   log.push('membros no grupo: ' + lista.length);
   /** @type {Object<string,string>} */
@@ -298,10 +301,3 @@ export const importarGrupo = webMethod(Permissions.Admin, async () => {
   return log;
 });
 
-export const debugGrupo = webMethod(Permissions.Admin, async () => {
-  const g = await groups.getGroupBySlug('networking-nos-games', /** @type {any} */ ({ suppressAuth: true }));
-  const a = /** @type {any} */ (await gMembros.listGroupMembers(g._id, /** @type {any} */ ({ suppressAuth: true })));
-  const b = /** @type {any} */ (await gMembros.listGroupMembers(g._id, /** @type {any} */ ({ limit: 100, skip: 0, suppressAuth: true })));
-  const tipo = (x) => Array.isArray(x) ? 'array:' + x.length : (x && typeof x === 'object' ? 'obj:' + Object.keys(x).join(',') : typeof x);
-  return { gid: g._id, total: g.membersCount, a: tipo(a), aItems: a && a.items ? tipo(a.items) : '', amostra: JSON.stringify((a.items || a)[0] || null).slice(0, 400), b: tipo(b), bItems: b && b.items ? tipo(b.items) : '' };
-});
