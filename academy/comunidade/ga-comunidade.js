@@ -199,7 +199,7 @@
     render() {
       if (!this.app) return;
       var aluno = this.s.aluno;
-      var top = '<header class="top"><img src="' + IMG + 'ga.png" alt="Global Academy"><span class="bar"></span><img src="' + IMG + 'utv.png" alt="Ulisses TV"><span class="ttl g">COMUNIDADE</span></header>';
+      var top = this.hasAttribute('embutido') ? '' : '<header class="top"><img src="' + IMG + 'ga.png" alt="Global Academy"><span class="bar"></span><img src="' + IMG + 'utv.png" alt="Ulisses TV"><span class="ttl g">COMUNIDADE</span></header>';
       var tabs = ABAS.map((t) => '<button class="tab' + (this.aba === t[0] ? ' on' : '') + '" data-aba="' + t[0] + '">' + t[1] + '</button>').join('');
       var nav = ABAS.map((t) => '<button class="' + (this.aba === t[0] && !this.perfil ? 'on' : '') + '" data-aba="' + t[0] + '">' + t[1] + '</button>').join('') +
         (this.s.perfil ? '<button data-perfil="' + esc(this.s.perfil.handle) + '">Meu perfil</button>' : '');
