@@ -8,7 +8,7 @@ import wixLocation from 'wix-location-frontend';
 const PLANO = '/pricing-plans/personaliza-o-do-plano?planId=fc7d621e-2fd9-42fa-9be9-7407e5f9495a&checkoutFlowId=32621e00-ff95-4f9a-91a0-b021d562bd84&pricingVariantId=b2484435-a12e-4bca-b344-597941b75440';
 
 $w.onReady(async function () {
-  const el = $w('#comu');
+  const el = $w('#customElement1');
   const enviar = (id, ok, data) => el.setAttribute('resp', JSON.stringify({ id, ok, data, t: Date.now() }));
   const sessao = async () => el.setAttribute('sessao', JSON.stringify(await C.sessao()));
 
