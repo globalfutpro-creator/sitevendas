@@ -46,7 +46,7 @@ async function perfilDe(memberId, m) {
     memberId,
     handle: usado ? base + (Date.now() % 1000) : base,
     nome: (m && m.profile && m.profile.nickname) || 'Aluno',
-    foto: (m && m.profile && m.profile.photo && m.profile.photo.url) || '',
+    foto: (m && m.profile && (/** @type {any} */ (m.profile).profilePhoto || /** @type {any} */ (m.profile).photo || {}).url) || '',
     capa: '', area: '', bio: '', seguidores: 0, seguindo: 0, posts: 0, professor: false
   };
   return wixData.insert('ComuPerfis', novo, OPT);
@@ -272,7 +272,8 @@ export const importarGrupo = webMethod(Permissions.Admin, async () => {
     let m = null;
     try { m = await sMembros.getMember(id, { fieldsets: ['PUBLIC'] }); } catch (e) { m = null; }
     const p = await perfilDe(id, m);
-    const foto = (m && m.profile && m.profile.photo && m.profile.photo.url) || p.foto || '';
+    const pr = /** @type {any} */ (m && m.profile) || {};
+    const foto = (pr.profilePhoto && pr.profilePhoto.url) || (pr.photo && pr.photo.url) || p.foto || '';
     const nome = (m && m.profile && m.profile.nickname) || p.nome;
     await wixData.update('ComuPerfis', { ...p, foto, nome, entrouEm: it.joinedDate ? new Date(it.joinedDate) : (p.entrouEm || new Date()) }, OPT);
     porNome[String(nome).trim().toLowerCase()] = id;
