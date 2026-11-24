@@ -5,7 +5,7 @@ import { Permissions, webMethod } from 'wix-web-module';
 import wixData from 'wix-data';
 import { currentMember } from 'wix-members-backend';
 import { orders } from 'wix-pricing-plans-backend';
-import { mediaManager } from 'wix-media-backend';
+import { files } from 'wix-media.v2';
 import { collections } from 'wix-data.v2';
 import { elevate } from 'wix-auth';
 
@@ -109,10 +109,13 @@ export const comentarios = webMethod(Permissions.Anyone, async (postId) => {
 });
 
 // ---------- escrita (só aluno) ----------
-export const uploadUrl = webMethod(Permissions.SiteMember, async ({ tipo, nome }) => {
+export const uploadUrl = webMethod(Permissions.SiteMember, async ({ tipo, nome, mime }) => {
   await exigirAluno();
-  const mime = tipo === 'video' ? 'video/mp4' : 'image/jpeg';
-  return mediaManager.getUploadUrl('/comunidade', /** @type {any} */ ({ mediaOptions: { mimeType: mime, mediaType: tipo === 'video' ? 'video' : 'image' }, metadataOptions: { isPrivate: false, isVisitorUpload: true } }));
+  const ok = /^(image\/(jpeg|png|webp)|video\/(mp4|quicktime|webm))$/.test(String(mime || ''));
+  if (!ok) throw new Error('FORMATO');
+  const gerar = elevate(files.generateFileUploadUrl);
+  const r = await gerar(String(mime), /** @type {any} */ ({ fileName: limpa(nome, 60) || (tipo === 'video' ? 'post.mp4' : 'post.jpg') }));
+  return { uploadUrl: r.uploadUrl };
 });
 
 export const postar = webMethod(Permissions.SiteMember, async ({ midia, tipo, legenda, aba }) => {

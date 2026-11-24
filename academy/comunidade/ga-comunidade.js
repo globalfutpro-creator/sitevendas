@@ -6,7 +6,7 @@
   var IMG = 'https://cdn.jsdelivr.net/gh/globalfutpro-creator/sitevendas@18e97ce3a028a0aecedebded63469e07687417b4/academy/img/';
   var ABAS = [['todos', 'Feed'], ['alta', 'Em alta'], ['narracao', 'Narração'], ['edicao', 'Edição'], ['artes', 'Artes'], ['jogo', 'Jogo']];
   var LIM = { imagemMB: 10, videoMB: 100, videoSeg: 90 };
-  var ERROS = { ENTRAR: 'Entre na sua conta para continuar.', SO_ALUNOS: 'Só alunos da Global Academy podem fazer isso.', HANDLE_USADO: 'Esse @ já está em uso.', VAZIO: 'Escreva alguma coisa.', SEM_MIDIA: 'Escolha um vídeo ou uma imagem.' };
+  var ERROS = { ENTRAR: 'Entre na sua conta para continuar.', SO_ALUNOS: 'Só alunos da Global Academy podem fazer isso.', HANDLE_USADO: 'Esse @ já está em uso.', VAZIO: 'Escreva alguma coisa.', SEM_MIDIA: 'Escolha um vídeo ou uma imagem.', FORMATO: 'Formato não aceito. Use MP4, JPG, PNG ou WEBP.' };
   if (!document.getElementById('ga-comu-fonts')) {
     var l = document.createElement('link'); l.id = 'ga-comu-fonts'; l.rel = 'stylesheet';
     l.href = 'https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Barlow:wght@400;500;600;700;800&display=swap';
@@ -326,7 +326,7 @@
         if (!arq) { ms.textContent = ERROS.SEM_MIDIA; return false; }
         btn.disabled = true; btn.textContent = 'Enviando…';
         try {
-          var up = await this.chamar('uploadUrl', { tipo: tipo === 'video' ? 'video' : 'imagem', nome: arq.name });
+          var up = await this.chamar('uploadUrl', { tipo: tipo === 'video' ? 'video' : 'imagem', nome: arq.name, mime: arq.type });
           var url = await this.enviar(arq, up, tipo, o.querySelector('#pg'));
           var novo = await this.chamar('postar', { midia: url, tipo: tipo, legenda: o.querySelector('#lg').value, aba: o.querySelector('#ab').value });
           novo.autor = this.s.perfil; novo.ultimos = []; this.posts.unshift(novo);
@@ -350,21 +350,22 @@
     }
     enviar(arq, up, tipo, pg) {
       return new Promise((ok, no) => {
-        var fd = new FormData(); fd.append('upload_token', up.uploadToken); fd.append('file', arq, arq.name);
-        var x = new XMLHttpRequest(); x.open('POST', up.uploadUrl);
+        var x = new XMLHttpRequest(); x.open('PUT', up.uploadUrl + (up.uploadUrl.indexOf('?') < 0 ? '?' : '&') + 'filename=' + encodeURIComponent(arq.name));
+        x.setRequestHeader('Content-Type', arq.type);
         pg.hidden = false;
         x.upload.onprogress = (e) => { if (e.lengthComputable) pg.firstChild.style.width = Math.round(e.loaded / e.total * 100) + '%'; };
         x.onload = () => {
           try {
-            var r = JSON.parse(x.responseText); var it = Array.isArray(r) ? r[0] : r;
-            var nome = it.file_name || it.fileName || '';
-            var url = it.file_url || it.fileUrl || '';
-            if (tipo === 'video') url = nome ? 'https://video.wixstatic.com/video/' + nome.replace(/\.[^.]+$/, '') + '/480p/mp4/file.mp4' : url;
-            else if (nome && !/^https?:/.test(url)) url = 'https://static.wixstatic.com/media/' + nome;
-            url ? ok(url) : no(new Error('UPLOAD'));
+            var r = JSON.parse(x.responseText); var f = r.file || r;
+            var url = f.url || '';
+            if (tipo === 'video' && f.media && f.media.video && f.media.video.resolutions && f.media.video.resolutions.length) {
+              var rs = f.media.video.resolutions.slice().sort(function (a, b) { return (b.height || 0) - (a.height || 0); });
+              url = (rs.find(function (v) { return (v.height || 0) <= 720; }) || rs[0]).url || url;
+            }
+            x.status < 300 && url ? ok(url) : no(new Error('UPLOAD'));
           } catch (e) { no(new Error('UPLOAD')); }
         };
-        x.onerror = () => no(new Error('UPLOAD')); x.send(fd);
+        x.onerror = () => no(new Error('UPLOAD')); x.send(arq);
       });
     }
     abrirEditar() {
