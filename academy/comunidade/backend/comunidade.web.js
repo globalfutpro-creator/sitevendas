@@ -21,18 +21,19 @@ async function quemSou() {
   try { m = await currentMember.getMember({ fieldsets: ['FULL'] }); } catch (e) { m = null; }
   if (!m) return { membro: null, aluno: false, admin: false };
   let roles = [];
-  try { roles = (await currentMember.getRoles()).map(r => r.title || r.name || ''); } catch (e) { roles = []; }
+  try { roles = (await currentMember.getRoles()).map(r => /** @type {any} */ (r).title || ''); } catch (e) { roles = []; }
   const admin = roles.some(r => ADMIN_ROLES.includes(r));
   let aluno = admin;
   if (!aluno) {
     try {
-      const lista = await orders.listCurrentMemberOrders({ orderStatus: ['ACTIVE'] });
+      const lista = await orders.listCurrentMemberOrders(/** @type {any} */ ({ orderStatuses: ['ACTIVE'] }));
       aluno = (lista || []).some(o => PLANOS_ALUNO.includes(o.planId));
     } catch (e) { aluno = false; }
   }
   return { membro: m, aluno, admin };
 }
 
+/** @param {string} memberId @param {any} m */
 async function perfilDe(memberId, m) {
   const r = await wixData.query('ComuPerfis').eq('memberId', memberId).limit(1).find(OPT);
   if (r.items.length) return r.items[0];
@@ -55,7 +56,7 @@ async function exigirAluno() {
   return { ...s, perfil };
 }
 
-const limpa = (t, n) => String(t || '').replace(/<[^>]*>/g, '').trim().slice(0, n);
+const limpa = (/** @type {any} */ t, /** @type {number} */ n) => String(t || '').replace(/<[^>]*>/g, '').trim().slice(0, n);
 
 // ---------- leitura (qualquer pessoa) ----------
 export const sessao = webMethod(Permissions.Anyone, async () => {
@@ -111,7 +112,7 @@ export const comentarios = webMethod(Permissions.Anyone, async (postId) => {
 export const uploadUrl = webMethod(Permissions.SiteMember, async ({ tipo, nome }) => {
   await exigirAluno();
   const mime = tipo === 'video' ? 'video/mp4' : 'image/jpeg';
-  return mediaManager.getUploadUrl('/comunidade', { mimeType: mime, mediaOptions: { mediaType: tipo === 'video' ? 'video' : 'image' }, metadataOptions: { isPrivate: false, isVisitorUpload: true }, fileName: limpa(nome, 60) || 'post' });
+  return mediaManager.getUploadUrl('/comunidade', /** @type {any} */ ({ mediaOptions: { mimeType: mime, mediaType: tipo === 'video' ? 'video' : 'image' }, metadataOptions: { isPrivate: false, isVisitorUpload: true } }));
 });
 
 export const postar = webMethod(Permissions.SiteMember, async ({ midia, tipo, legenda, aba }) => {
@@ -208,11 +209,11 @@ export const instalarColecoes = webMethod(Permissions.Admin, async () => {
   const feito = [];
   for (const [id, campos] of Object.entries(COLS)) {
     try {
-      await criar({
+      await criar(/** @type {any} */ ({
         _id: id, displayName: id,
         fields: campos.map(([key, type]) => ({ key, displayName: key, type })),
         permissions: { read: 'ANYONE', insert: 'ADMIN', update: 'ADMIN', remove: 'ADMIN' }
-      });
+      }));
       feito.push(id + ': criada');
     } catch (e) { feito.push(id + ': ' + String((e && e.message) || e).slice(0, 120)); }
   }
