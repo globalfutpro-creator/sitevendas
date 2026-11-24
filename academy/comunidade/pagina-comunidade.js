@@ -25,5 +25,9 @@ $w.onReady(async function () {
   });
 
   authentication.onLogin(sessao);
-  try { el.setAttribute('inicio', JSON.stringify(await C.inicio())); } catch (e) { await sessao(); }
+  // tudo em paralelo: a comunidade abre de uma vez
+  try {
+    const [ses, feed, top] = await Promise.all([C.sessao(), C.feed({}), C.maisSeguidos()]);
+    el.setAttribute('inicio', JSON.stringify({ sessao: ses, feed, top }));
+  } catch (e) { await sessao(); }
 });
