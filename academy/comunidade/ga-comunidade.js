@@ -119,7 +119,7 @@
     '.hin{position:relative;padding:28px 20px 22px}',
     '.hero .kick{display:inline-flex;align-items:center;gap:8px;font:800 11px Barlow;letter-spacing:.14em;text-transform:uppercase;color:#5ff0ff;margin-bottom:10px}.hero .kick i{width:8px;height:8px;border-radius:50%;background:#17d9ff;box-shadow:0 0 10px #17d9ff;animation:pis 1.6s ease-in-out infinite}',
     '@keyframes pis{50%{opacity:.35;transform:scale(.7)}}',
-    '.hero h1{margin:0;font:700 56px/.86 Teko,sans-serif;text-transform:uppercase;letter-spacing:.01em;text-shadow:0 0 24px rgba(155,48,255,.6)}.hero h1 .g{filter:drop-shadow(0 0 14px rgba(255,196,61,.55))}@media(min-width:700px){.hero h1{font-size:76px}}',
+    '.hero h1{margin:0;font:700 clamp(36px,12vw,56px)/.86 Teko,sans-serif;max-width:100%;overflow-wrap:anywhere;text-transform:uppercase;letter-spacing:.01em;text-shadow:0 0 24px rgba(155,48,255,.6)}.hero h1 .g{filter:drop-shadow(0 0 14px rgba(255,196,61,.55))}@media(min-width:700px){.hero h1{font-size:76px}}',
     '.hero p{margin:12px 0 16px;color:#efe6ff;font-size:15px;line-height:1.5;max-width:470px}',
     '.hchips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}.hchips span{display:flex;align-items:baseline;gap:6px;padding:8px 12px;border-radius:12px;background:rgba(10,4,40,.55);border:1px solid rgba(255,196,61,.35);font:700 12px Barlow;letter-spacing:.08em;text-transform:uppercase;color:#cdb8ff}.hchips b{font:700 26px/1 Teko;color:#ffc43d;letter-spacing:0}',
     '.hst{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.hst .btn{min-height:46px}',
@@ -208,7 +208,7 @@
     }
     async buscar(zera) {
       this.carregando = true; this.render();
-      var antes = !zera && this.posts.length ? this.posts[this.posts.length - 1]._createdDate : null;
+      var ul = this.posts[this.posts.length - 1]; var antes = !zera && ul ? (ul.quando || ul._createdDate) : null;
       var r = await this.chamar('feed', { aba: this.aba, antesDe: antes, autor: this.perfil ? this.perfil.memberId : null });
       this.posts = zera ? r.posts : this.posts.concat(r.posts); this.fim = r.fim; if (zera) this.lim = 10;
       this.carregando = false; this.render();
@@ -276,7 +276,8 @@
       var itens = this.posts.map((p) => ({ k: 'p', d: new Date(p.quando || p._createdDate).getTime(), p: p }));
       if (this.aba === 'todos' && this.membros.length) {
         var limite = this.fim || !this.posts.length ? 0 : Math.min.apply(null, itens.map((x) => x.d));
-        this.membros.forEach((m) => { var d = new Date(m.entrouEm || m._createdDate).getTime(); if (d >= limite) itens.push({ k: 'j', d: d, p: m }); });
+        var jaEntrou = new Set(this.posts.filter((p) => p.tipo === 'entrada').map((p) => p.autorId));
+        this.membros.forEach((m) => { if (jaEntrou.has(m.memberId)) return; var d = new Date(m.entrouEm || m._createdDate).getTime(); if (d >= limite) itens.push({ k: 'j', d: d, p: m }); });
       }
       itens.sort((a, b) => b.d - a.d);
       this.totalItens = itens.length;

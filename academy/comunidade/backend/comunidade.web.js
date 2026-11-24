@@ -71,11 +71,11 @@ export const sessao = webMethod(Permissions.Anyone, async () => {
 });
 
 async function montarFeed({ aba = 'todos', antesDe = null, autor = null } = {}, meId) {
-  let q = wixData.query('ComuPosts').ne('oculto', true).descending('_createdDate').limit(12);
+  let q = wixData.query('ComuPosts').ne('oculto', true).descending('quando').limit(12);
   if (aba === 'alta') q = wixData.query('ComuPosts').ne('oculto', true).descending('curtidas').limit(12);
   else if (aba && aba !== 'todos') q = q.eq('aba', aba);
   if (autor) q = q.eq('autorId', autor);
-  if (antesDe) q = q.lt('_createdDate', new Date(antesDe));
+  if (antesDe) q = q.lt('quando', new Date(antesDe));
   const r = await q.find(OPT);
   if (!r.items.length) return { posts: [], fim: true };
   const pids = r.items.map(p => p._id);
@@ -143,7 +143,7 @@ export const postar = webMethod(Permissions.SiteMember, async ({ midia, tipo, le
   const p = await wixData.insert('ComuPosts', {
     autorId: s.membro._id, midia: midia ? String(midia) : '', tipo: !midia ? 'texto' : (tipo === 'video' ? 'video' : 'imagem'),
     legenda: limpa(legenda, LIM.legenda), aba: ABAS.includes(aba) ? aba : 'geral',
-    curtidas: 0, comentarios: 0, oculto: false
+    curtidas: 0, comentarios: 0, oculto: false, quando: new Date()
   }, OPT);
   await wixData.update('ComuPerfis', { ...s.perfil, posts: (s.perfil.posts || 0) + 1 }, OPT);
   return p;
@@ -250,9 +250,177 @@ export const membros = webMethod(Permissions.Anyone, async () => {
 
 // Importa (espelha) o grupo "Networking nos Games": membros, posts e comentários. Só admin, pode rodar de novo.
 const POSTS_GRUPO = [
-  { autor: 'ADM', quando: '2025-07-03T15:00:00Z', curtidas: 2, texto: 'Networking gamer! Bem-vindo ao grupo! Aqui os talentos já consolidados se encontram com os novos membros, trocando informações, conteúdos, serviços e muito mais. Aproveite o espaço para postar vídeos, artes, roteiros etc. Mostre o seu talento para que outras pessoas possam contratar os seus serviços, ou até fechar grandes parcerias.', comentarios: [] },
-  { autor: 'Caldana', quando: '2025-07-31T15:00:00Z', curtidas: 2, texto: 'Olá amigos!!!', comentarios: [] },
-  { autor: 'Lucas Augusto', quando: '2026-02-14T15:00:00Z', curtidas: 5, texto: 'Fala galera', comentarios: [{ autor: 'Caldana', texto: 'Bom te ver por aqui irmão! 👍' }] }
+{
+"autor": "ADM",
+"quando": "2025-07-03T15:00:00Z",
+"curtidas": 2,
+"texto": "Networking gamer! Bem-vindo ao grupo! Aqui os talentos já consolidados se encontram com os novos membros, trocando informações, conteúdos, serviços e muito mais. Aproveite o espaço para postar vídeos, artes, roteiros etc. Mostre o seu talento para que outras pessoas possam contratar os seus serviços, ou até fechar grandes parcerias.",
+"midia": "https://static.wixstatic.com/media/5bbd9d_9c7d8344c7ab4ceea3cc0b72a715175b~mv2.jpg",
+"comentarios": []
+},
+{
+"autor": "Caldana",
+"quando": "2025-07-31T15:00:00Z",
+"curtidas": 2,
+"texto": "Olá amigos!!!",
+"comentarios": []
+},
+{
+"autor": "Lucas Augusto",
+"quando": "2026-02-14T15:00:00Z",
+"curtidas": 5,
+"texto": "Fala galera",
+"comentarios": [
+{
+"autor": "Caldana",
+"texto": "Bom te ver por aqui irmão! 👍"
+}
+]
+},
+{
+"autor": "ADM",
+"quando": "2026-04-01T15:00:00Z",
+"curtidas": 4,
+"texto": "Nova capa da comunidade no ar! 🎨",
+"midia": "https://static.wixstatic.com/media/5bbd9d_5df62bf8a8cb4c988b0d8636ff0a8cd0~mv2.png",
+"comentarios": []
+},
+{
+"autor": "brunosoarescomercialti",
+"quando": "2026-04-07T15:00:00Z",
+"curtidas": 5,
+"entrada": 1,
+"texto": "👋 Chegou na comunidade!",
+"comentarios": [
+{
+"autor": "ADM",
+"texto": "Bem-vindo ao grupo Bruno Soares!\n\nVocê pode se conectar com outros membros, receber atualizações e compartilhar vídeos.\n\nAqui os talentos já consolidados se encontram com os novos membros, trocando informações, conteúdos, serviços e muito mais. Aproveite o espaço para postar vídeos, artes, roteiros etc... mostre o seu talento, para que outras pessoas possam contratar os seus serviços, ou até fechar grandes parcerias."
+}
+]
+},
+{
+"autor": "Jonathan Verdelho",
+"quando": "2026-04-08T14:00:00Z",
+"curtidas": 3,
+"entrada": 1,
+"texto": "👋 Chegou na comunidade!",
+"comentarios": [
+{
+"autor": "ADM",
+"texto": "Bem-vindo ao grupo Jonathan Verdelho!\n\nVocê pode se conectar com outros membros, receber atualizações e compartilhar vídeos.\n\nAqui os talentos já consolidados se encontram com os novos membros, trocando informações, conteúdos, serviços e muito mais. Aproveite o espaço para postar vídeos, artes, roteiros etc... mostre o seu talento, para que outras pessoas possam contratar os seus serviços, ou até fechar grandes parcerias."
+}
+]
+},
+{
+"autor": "Jonathan Verdelho",
+"quando": "2026-04-08T15:00:00Z",
+"curtidas": 5,
+"texto": "#Top 10 💜🏌‍♀️\n🎮🔥",
+"comentarios": []
+},
+{
+"autor": "sagravitor",
+"quando": "2026-04-09T14:00:00Z",
+"curtidas": 5,
+"entrada": 1,
+"texto": "👋 Chegou na comunidade!",
+"comentarios": [
+{
+"autor": "ADM",
+"texto": "Bem-vindo ao grupo Sagra Vitor!\n\nVocê pode se conectar com outros membros, receber atualizações e compartilhar vídeos.\n\nAqui os talentos já consolidados se encontram com os novos membros, trocando informações, conteúdos, serviços e muito mais. Aproveite o espaço para postar vídeos, artes, roteiros etc... mostre o seu talento, para que outras pessoas possam contratar os seus serviços, ou até fechar grandes parcerias.\n\nO jogo agora é pra valer!!!"
+}
+]
+},
+{
+"autor": "Caldana",
+"quando": "2026-04-09T15:00:00Z",
+"curtidas": 4,
+"texto": "Aprenda a montar torneios, ligas e eventos gamers, online ou presencial.",
+"midia": "https://static.wixstatic.com/media/91aae6_da4b5fbf00ea4968ad9a58a2d51c7c63~mv2.jpg",
+"comentarios": []
+},
+{
+"autor": "lalmeiida27",
+"quando": "2026-04-10T15:00:00Z",
+"curtidas": 3,
+"entrada": 1,
+"texto": "👋 Chegou na comunidade!",
+"comentarios": [
+{
+"autor": "ADM",
+"texto": "Bem-vindo ao grupo lalmeiida27!\n\nVocê pode se conectar com outros membros, receber atualizações e compartilhar vídeos.\n\nAqui os talentos já consolidados se encontram com os novos membros, trocando informações, conteúdos, serviços e muito mais. Aproveite o espaço para postar vídeos, artes, roteiros etc... mostre o seu talento, para que outras pessoas possam contratar os seus serviços, ou até fechar grandes parcerias.\n\nO jogo agora é pra valer!!!"
+}
+]
+},
+{
+"autor": "marcio.silva443",
+"quando": "2026-04-11T15:00:00Z",
+"curtidas": 2,
+"entrada": 1,
+"texto": "👋 Chegou na comunidade!",
+"comentarios": []
+},
+{
+"autor": "HLE FAM",
+"quando": "2026-04-12T15:00:00Z",
+"curtidas": 4,
+"texto": "Boas amigos",
+"comentarios": [
+{
+"autor": "ADM",
+"texto": "Boas amigo"
+}
+]
+},
+{
+"autor": "RaianeSilva",
+"quando": "2026-04-13T15:00:00Z",
+"curtidas": 3,
+"entrada": 1,
+"texto": "👋 Chegou na comunidade!",
+"comentarios": []
+},
+{
+"autor": "KiTA-GR-78",
+"quando": "2026-04-14T15:00:00Z",
+"curtidas": 4,
+"entrada": 1,
+"texto": "👋 Chegou na comunidade!",
+"comentarios": [
+{
+"autor": "Caldana",
+"texto": "Boas irmão."
+}
+]
+},
+{
+"autor": "FelipePlayMG",
+"quando": "2026-04-21T15:00:00Z",
+"curtidas": 4,
+"texto": "Boas Vindas\n\nBoa noite galera!\n\nVamos juntos em busca das realizações!",
+"comentarios": [
+{
+"autor": "ADM",
+"texto": "Bem demais Felipe, vamos juntos nessa, em breve postaremos novos conteúdos!!!"
+}
+]
+},
+{
+"autor": "LmsMrgamer",
+"quando": "2026-05-06T15:00:00Z",
+"curtidas": 3,
+"texto": "Salve Rapaziada, tranquilo? Vamos pra cima 🫡❤️",
+"comentarios": [
+{
+"autor": "ADM",
+"texto": "Bem-vindo LMS, a grande jornada está apenas começando!!! 🚀"
+},
+{
+"autor": "Caldana",
+"texto": "Pra cima irmão 🚀"
+}
+]
+}
 ];
 export const importarGrupo = webMethod(Permissions.Admin, async () => {
   const log = [];
@@ -283,21 +451,37 @@ export const importarGrupo = webMethod(Permissions.Admin, async () => {
     porNome[String(nome).trim().toLowerCase()] = id;
     log.push(String(nome) + ' | ' + ((m && m.profile && m.profile.slug) || '') + ' | ' + id);
   }
-  for (const po of POSTS_GRUPO) {
-    const autorId = porNome[po.autor.toLowerCase()] || Object.entries(porNome).find(([k]) => k.indexOf(po.autor.toLowerCase().split(' ')[0]) === 0)?.[1];
+  /** @param {string} n */
+  const acha = (n) => { const k = String(n).toLowerCase(); return porNome[k] || Object.entries(porNome).find(([x]) => x.replace(/[^a-z0-9]/g, '') === k.replace(/[^a-z0-9]/g, ''))?.[1] || Object.entries(porNome).find(([x]) => x.indexOf(k.split(' ')[0]) === 0 || k.indexOf(x.split(' ')[0]) === 0)?.[1]; };
+  // ADM com @ bonito
+  const admId = acha('ADM');
+  if (admId) { const pa = (await wixData.query('ComuPerfis').eq('memberId', admId).limit(1).find(OPT)).items[0]; if (pa && /^globalfutpro/.test(pa.handle || '')) { await wixData.update('ComuPerfis', { ...pa, handle: 'globalacademy', nome: 'Global Academy' }, OPT); log.push('ADM agora @globalacademy'); } }
+  // posts antigos sem data ganham data
+  const semData = await wixData.query('ComuPosts').isEmpty('quando').limit(200).find(OPT);
+  for (const p of semData.items) await wixData.update('ComuPosts', { ...p, quando: p._createdDate }, OPT);
+  for (const po of /** @type {any[]} */ (POSTS_GRUPO)) {
+    const autorId = acha(po.autor);
     if (!autorId) { log.push('sem autor: ' + po.autor); continue; }
-    const ja = await wixData.query('ComuPosts').eq('autorId', autorId).eq('legenda', po.texto).count(OPT);
-    if (ja) { log.push('já existe: ' + po.texto.slice(0, 20)); continue; }
-    const novo = await wixData.insert('ComuPosts', { autorId, midia: '', tipo: 'texto', legenda: po.texto, aba: 'geral', curtidas: po.curtidas, comentarios: po.comentarios.length, oculto: false, quando: new Date(po.quando) }, OPT);
-    for (const c of po.comentarios) {
-      const cid = porNome[c.autor.toLowerCase()] || Object.entries(porNome).find(([k]) => k.indexOf(c.autor.toLowerCase().split(' ')[0]) === 0)?.[1];
-      const cp = cid ? (await wixData.query('ComuPerfis').eq('memberId', cid).limit(1).find(OPT)).items[0] : null;
-      await wixData.insert('ComuComentarios', { postId: novo._id, memberId: cid || '', handle: cp ? cp.handle : c.autor, texto: c.texto }, OPT);
+    const tipo = po.entrada ? 'entrada' : (po.midia ? 'imagem' : 'texto');
+    let post = (await wixData.query('ComuPosts').eq('autorId', autorId).eq('legenda', po.texto).limit(1).find(OPT)).items[0];
+    if (post && po.entrada && Math.abs(new Date(post.quando).getTime() - new Date(po.quando).getTime()) > 3600000) post = null;
+    if (post) { post = await wixData.update('ComuPosts', { ...post, midia: po.midia || '', tipo, curtidas: po.curtidas, quando: new Date(po.quando), comentarios: po.comentarios.length }, OPT); log.push('atualizado: ' + po.autor + ' ' + po.texto.slice(0, 20)); }
+    else {
+      post = await wixData.insert('ComuPosts', { autorId, midia: po.midia || '', tipo, legenda: po.texto, aba: 'geral', curtidas: po.curtidas, comentarios: po.comentarios.length, oculto: false, quando: new Date(po.quando) }, OPT);
+      const pa = (await wixData.query('ComuPerfis').eq('memberId', autorId).limit(1).find(OPT)).items[0];
+      if (pa && !po.entrada) await wixData.update('ComuPerfis', { ...pa, posts: (pa.posts || 0) + 1 }, OPT);
+      log.push('post importado: ' + po.autor + ' ' + po.texto.slice(0, 20));
     }
-    const pa = (await wixData.query('ComuPerfis').eq('memberId', autorId).limit(1).find(OPT)).items[0];
-    if (pa) await wixData.update('ComuPerfis', { ...pa, posts: (pa.posts || 0) + 1 }, OPT);
-    log.push('post importado: ' + po.texto.slice(0, 20));
+    const ja = (await wixData.query('ComuComentarios').eq('postId', post._id).limit(100).find(OPT)).items.map((c) => c.texto);
+    for (const c of po.comentarios) {
+      if (ja.includes(c.texto)) continue;
+      const cid = acha(c.autor);
+      const cp = cid ? (await wixData.query('ComuPerfis').eq('memberId', cid).limit(1).find(OPT)).items[0] : null;
+      await wixData.insert('ComuComentarios', { postId: post._id, memberId: cid || '', handle: cp ? cp.handle : c.autor, texto: c.texto }, OPT);
+    }
   }
+  // comentários antigos do ADM com o @ novo
+  if (admId) { const cs = await wixData.query('ComuComentarios').eq('memberId', admId).limit(200).find(OPT); for (const c of cs.items) if (c.handle !== 'globalacademy') await wixData.update('ComuComentarios', { ...c, handle: 'globalacademy' }, OPT); }
   return log;
 });
 
